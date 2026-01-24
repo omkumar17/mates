@@ -1,6 +1,9 @@
 const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/user");
+const Like = require("../models/like");
+const Match = require("../models/match");
+
 
 const router = express.Router();
 
@@ -56,4 +59,46 @@ router.put("/me", authMiddleware, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+
+/**
+ * @route   GET /api/user/discover
+ * @desc    Discover new users
+ * @access  Private
+ */
+router.get("/discover", authMiddleware, async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+
+    // 1️⃣ Get users I have already liked
+    const likedUsers = await Like.find({ fromUser: currentUserId }).select("toUser");
+
+    const likedUserIds = likedUsers.map(like => like.toUser);
+
+    // 2️⃣ Get users I am already matched with
+    const matches = await Match.find({ users: currentUserId });
+
+    const matchedUserIds = matches.flatMap(match =>
+      match.users.filter(id => id.toString() !== currentUserId.toString())
+    );
+
+    // 3️⃣ Exclude myself, liked users, matched users
+    const excludedIds = [
+      currentUserId,
+      ...likedUserIds,
+      ...matchedUserIds
+    ];
+
+    // 4️⃣ Find remaining users
+    const users = await User.find({
+      _id: { $nin: excludedIds }
+    }).select("-passwordHash");
+
+    res.json(users);
+
+  } catch (error) {
+    console.error("Discover users error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
