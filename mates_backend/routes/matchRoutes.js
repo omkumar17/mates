@@ -37,4 +37,35 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/:matchId", authMiddleware, async (req, res) => {
+  try {
+    const { matchId } = req.params;
+
+    const match = await Match.findById(matchId)
+      .populate("users", "name email");
+
+
+
+    if (!match) {
+      return res.status(404).json({ message: "Match not found" });
+    }
+
+    console.log(match)
+
+    // Security: only allow if user is part of match
+    const isMember = match.users.some(
+      (u) => u._id.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    res.json(match);
+  } catch (error) {
+    console.error("Get match error:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

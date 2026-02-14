@@ -118,6 +118,19 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (data) => {
     const { matchId, message } = data;
 
+    socket.on("typing", ({ matchId }) => {
+  socket.to(matchId).emit("typing");
+});
+
+socket.on("stopTyping", ({ matchId }) => {
+  socket.to(matchId).emit("stopTyping");
+});
+
+socket.on("markSeen", ({ matchId }) => {
+  socket.to(matchId).emit("seenUpdate");
+});
+
+
     // Broadcast to others in room
     socket.to(matchId).emit("receiveMessage", {
       ...message,
