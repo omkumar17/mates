@@ -35,7 +35,7 @@ export default function HomePage() {
 
   return (
     <>
-    <Header/>
+    {/* <Header/> */}
     <div
       className="home min-h-full relative flex flex-col items-center justify-center px-6 text-center bg-black/40 backdrop-blur-xs"
 //       style={{

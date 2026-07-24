@@ -14,10 +14,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-    passwordHash: {
-      type: String,
-      required: true,
-    },
+    // passwordHash: {
+    //   type: String,
+    //   required: true,
+    // },
 
     // Day 2: profile fields
     age: {
@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema(
         trim: true,
       },
     ],
+    images: [
+      {
+        type: String, // image URL
+      },
+    ],
     preferences: {
       minAge: {
         type: Number,
@@ -53,6 +58,9 @@ const userSchema = new mongoose.Schema(
         type: Number,
         default: 60,
       },
+      genders: [{
+        type: String,
+      }],
       lookingFor: [
         {
           type: String, // e.g. "friendship", "dating", "networking"
@@ -64,6 +72,23 @@ const userSchema = new mongoose.Schema(
         default: "same-city",
       },
     },
+    seenProfiles: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        lastSeenAt: { type: Date, default: Date.now },
+        swipeType: { type: String, enum: ["like", "skip"] }
+      }
+    ],
+
+    exposureScore: { type: Number, default: 0 },
+    lastExposureUpdate: { type: Date, default: Date.now },
+
+    // seenProfiles: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    isActive: { type: Boolean, default: true },
+    lastNotificationAt: { type: Date, default: null },
+    recentProfileViews: { type: Number, default: 0 },
+    newMutualMatches: { type: Number, default: 0 },
+
   },
   { timestamps: true }
 );

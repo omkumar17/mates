@@ -42,6 +42,14 @@ app.use("/api/matches", matchRoutes);
 const messageRoutes = require("./routes/messageRoutes");
 app.use("/api/messages", messageRoutes);
 
+const notificationRoutes = require("./routes/notificationRoutes");
+app.use("/api/notifications", notificationRoutes);
+
+const interactionRoutes = require("./routes/interactionRoutes");
+app.use("/api/interactions", interactionRoutes);
+
+
+
 
 
 

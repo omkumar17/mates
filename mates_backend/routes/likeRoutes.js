@@ -2,18 +2,22 @@ const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
 const Like = require("../models/like");
 const Match = require("../models/match");
+const User = require("../models/user");
+const { calculateIntentWeight } = require("../services/intentAlgorithm");
 
 const router = express.Router();
 
 /**
  * @route   POST /api/likes/:targetUserId
- * @desc    Like a user & create match if mutual
+ * @desc    Like a user & create match if mutual (Intent Weighted)
  * @access  Private
  */
 router.post("/:targetUserId", authMiddleware, async (req, res) => {
   try {
-    const fromUserId = req.user._id;           // logged-in user
-    const toUserId = req.params.targetUserId; // user being liked
+    const fromUserId = req.user._id;
+    const toUserId = req.params.targetUserId;
+
+    const { viewTimeMs = 5000, interactionDepth = 1 } = req.body;
 
     // 1️⃣ Prevent liking yourself
     if (fromUserId.toString() === toUserId) {
@@ -30,19 +34,42 @@ router.post("/:targetUserId", authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "User already liked" });
     }
 
-    // 3️⃣ Create like
+    // 3️⃣ Anti-spam burst detection
+    const recentLikeCount = await Like.countDocuments({
+      fromUser: fromUserId,
+      createdAt: { $gte: Date.now() - 5 * 60 * 1000 },
+    });
+
+    const weight = calculateIntentWeight({
+      viewTimeMs,
+      interactionDepth,
+      recentLikeCount,
+    });
+
+    // 4️⃣ Create Like
     await Like.create({
       fromUser: fromUserId,
       toUser: toUserId,
+      weight,
     });
 
-    // 4️⃣ Check for reverse like
+    // 5️⃣ Atomic exposure + view increment
+    await User.updateOne(
+      { _id: toUserId },
+      {
+        $inc: {
+          exposureScore: weight,
+          recentProfileViews: 1,
+        },
+      }
+    );
+
+    // 6️⃣ Check reverse like
     const reverseLike = await Like.findOne({
       fromUser: toUserId,
       toUser: fromUserId,
     });
 
-    // 5️⃣ If reverse like exists → create match
     if (reverseLike) {
       const existingMatch = await Match.findOne({
         users: { $all: [fromUserId, toUserId] },
@@ -54,17 +81,26 @@ router.post("/:targetUserId", authMiddleware, async (req, res) => {
         });
       }
 
+      // 7️⃣ Atomic mutual match increment
+      await User.updateMany(
+        { _id: { $in: [fromUserId, toUserId] } },
+        { $inc: { newMutualMatches: 1 } }
+      );
+
       return res.json({
         message: "It's a match!",
         matched: true,
+        weight,
       });
     }
 
-    // 6️⃣ If no match yet
+    // 8️⃣ No match (silent model)
     res.json({
       message: "User liked successfully",
       matched: false,
+      weight,
     });
+
   } catch (error) {
     console.error("Like user error:", error);
     res.status(500).json({ message: "Server error" });

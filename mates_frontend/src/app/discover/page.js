@@ -18,6 +18,15 @@ export default function DiscoverPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [touchStartX, setTouchStartX] = useState(null);
 
+  // 🔥 NEW: image index per card
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // 🔥 Intent tracking
+  const [viewStartTime, setViewStartTime] = useState(Date.now());
+
+  // =============================
+  // Fetch Discover Feed
+  // =============================
   useEffect(() => {
     if (!user) return;
 
@@ -37,9 +46,32 @@ export default function DiscoverPage() {
 
   const currentUser = users[index];
 
-  // --------------------
+  // =============================
+  // 🔥 Reset image index + preload
+  // =============================
+  useEffect(() => {
+    setCurrentImageIndex(0);
+    setViewStartTime(Date.now());
+
+    if (currentUser?.images) {
+      currentUser.images.forEach((src) => {
+        const img = new Image();
+        img.src = src;
+      });
+    }
+  }, [index, currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      api.post("/user/impression", {
+        shownUserId: currentUser._id,
+      });
+    }
+  }, [currentUser]);
+
+  // =============================
   // Animation Controller
-  // --------------------
+  // =============================
   const goNext = (direction) => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -62,11 +94,19 @@ export default function DiscoverPage() {
     }, 280);
   };
 
+  // =============================
+  // Like / Skip
+  // =============================
   const handleLike = async () => {
     if (!currentUser) return;
 
+    const viewTimeMs = Date.now() - viewStartTime;
+
     try {
-      await api.post(`/likes/${currentUser._id}`);
+      await api.post(`/likes/${currentUser._id}`, {
+        viewTimeMs,
+        interactionDepth: currentImageIndex + 1, // 🔥 improved
+      });
     } catch (error) {
       console.error("Like failed", error);
     }
@@ -74,13 +114,14 @@ export default function DiscoverPage() {
     goNext("right");
   };
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
+    await api.post(`/interactions/skip/${currentUser._id}`);
     goNext("left");
   };
 
-  // --------------------
-  // Touch handlers
-  // --------------------
+  // =============================
+  // Touch Handlers (Swipe)
+  // =============================
   const handleTouchStart = (e) => {
     setTouchStartX(e.touches[0].clientX);
   };
@@ -107,70 +148,87 @@ export default function DiscoverPage() {
     setTouchStartX(null);
   };
 
+  // =============================
+  // 🔥 TAP HANDLER (IMAGE SWITCH)
+  // =============================
+  const handleTap = (e) => {
+    if (!currentUser?.images) return;
+
+    const cardWidth = e.currentTarget.clientWidth;
+    const clickX = e.nativeEvent.offsetX;
+
+    if (clickX > cardWidth / 2) {
+      // next image
+      setCurrentImageIndex((prev) =>
+        prev < currentUser.images.length - 1 ? prev + 1 : prev
+      );
+    } else {
+      // previous image
+      setCurrentImageIndex((prev) =>
+        prev > 0 ? prev - 1 : prev
+      );
+    }
+  };
+
   return (
     <ProtectedRoute>
       <div className="relative min-h-full bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
 
-        {/* ================= Mobile Top Left Logo ================= */}
+        {/* Mobile Logo */}
         <div className="fixed top-4 left-4 z-50 md:hidden">
-          <div className="flex items-center gap-2 text-lg font-bold tracking-wide drop-shadow-lg
-            bg-black/30 backdrop-blur px-3 py-1 rounded-lg">
+          <div className="flex items-center gap-2 text-lg font-bold bg-black/30 backdrop-blur px-3 py-1 rounded-lg text-white">
             ❤️ <span>Mates</span>
           </div>
         </div>
 
-        {/* ================= Card Area ================= */}
-        <div
-          className="
-            flex items-center justify-center
-            min-h-full
-            sm:pl-64
-            px-2
-            pt-4 sm:pt-0
-            pb-20 sm:pb-0
-            overflow-hidden
-          "
-        >
+        {/* Card Area */}
+        <div className="flex items-center justify-center min-h-full sm:pl-64 px-2 pt-4 pb-20">
+
           {loading ? (
             <div>Loading...</div>
           ) : !currentUser ? (
-            <p className="opacity-80 absolute top-[50%] text-center">🎉 No more users to discover</p>
+            <p className="opacity-80 absolute top-[50%] text-center">
+              🎉 No more users to discover
+            </p>
           ) : (
-            <div
-              className="
-                w-full
-                h-[calc(100dvh-80px)]   /* full height minus bottom navbar */
-                sm:max-w-sm
-                sm:px-0
-                overflow-hidden
-              "
-            >
-              {/* ================= CARD ================= */}
+            <div className="w-full h-[calc(100dvh-80px)] sm:max-w-sm">
+
+              {/* CARD */}
               <div
                 key={currentUser._id}
-                className="
-                  relative h-full
-                  shadow-2xl overflow-hidden
-                  transition-transform duration-300 touch-pan-y
-                  rounded-xl md:rounded-2xl
-                  bg-black
-                "
+                className="relative h-full shadow-2xl overflow-hidden transition-transform duration-300 rounded-xl bg-black"
                 style={{
                   transform: `translateX(${offsetX}px) rotate(${offsetX / 18}deg) scale(${1 - Math.abs(offsetX) / 3000})`,
-                  touchAction: "pan-y",
                 }}
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
+                onClick={handleTap} // 🔥 tap support
               >
-                {/* Image */}
+
+                {/* 🔥 IMAGE */}
                 <img
-                  src="/omkumar_image.jpg"
+                  src={currentUser.images[currentImageIndex]}
                   alt={currentUser.name}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="eager"
+                  className="absolute inset-0 h-full w-full object-cover transition-all duration-300"
                 />
 
-                {/* Dark Fade Overlay */}
+                {/* 🔥 TOP PROGRESS BAR */}
+                <div className="absolute top-2 left-2 right-2 flex gap-1 z-20">
+                  {currentUser.images.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`flex-1 h-[3px] rounded-full ${
+                        i === currentImageIndex
+                          ? "bg-white"
+                          : "bg-white/40 border border-dashed border-white"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
                 {/* Content */}
@@ -201,8 +259,8 @@ export default function DiscoverPage() {
                     </button>
                   </div>
                 </div>
-              </div>
 
+              </div>
             </div>
           )}
         </div>

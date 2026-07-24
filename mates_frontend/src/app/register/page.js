@@ -116,7 +116,8 @@ export default function RegisterPage() {
               placeholder="Create a strong password"
               className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 pr-14
               outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30"
-              value={form.password}
+              // value={form.password}
+              value="secret123"
               onChange={handleChange}
               required
             />
