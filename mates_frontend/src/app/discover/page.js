@@ -172,7 +172,7 @@ export default function DiscoverPage() {
 
   return (
     <ProtectedRoute>
-      <div className="relative min-h-full bg-[var(--background)] text-[var(--foreground)] overflow-hidden">
+      <div className="relative min-h-full bg-background text-foreground overflow-hidden">
 
         {/* Mobile Logo */}
         <div className="fixed top-4 left-4 z-50 md:hidden">
@@ -219,7 +219,7 @@ export default function DiscoverPage() {
                   {currentUser.images.map((_, i) => (
                     <div
                       key={i}
-                      className={`flex-1 h-[3px] rounded-full ${
+                      className={`flex-1 h-0.75 rounded-full ${
                         i === currentImageIndex
                           ? "bg-white"
                           : "bg-white/40 border border-dashed border-white"
@@ -229,7 +229,7 @@ export default function DiscoverPage() {
                 </div>
 
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/40 to-transparent" />
 
                 {/* Content */}
                 <div className="absolute bottom-0 w-full p-5 text-white z-10">
