@@ -100,7 +100,7 @@ export default function Header() {
               : "md:translate-none translate-x-full"}  `}>
 
             <li className="md:hidden">
-              <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between p-4">
+              <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between p-4">
 
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">

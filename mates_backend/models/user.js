@@ -14,10 +14,10 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
-    // passwordHash: {
-    //   type: String,
-    //   required: true,
-    // },
+    passwordHash: {
+      type: String,
+      required: true,
+    },
 
     // Day 2: profile fields
     age: {
