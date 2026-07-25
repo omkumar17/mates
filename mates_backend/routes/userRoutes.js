@@ -218,22 +218,36 @@ router.get("/discover", authMiddleware, async (req, res) => {
     }
 });
 
-router.post("/impression", authMiddleware, async (req, res) => {
-  try {
-    const { shownUserId } = req.body;
+// router.post("/impression", authMiddleware, async (req, res) => {
+//   try {
+//     const { shownUserId } = req.body;
 
-    const shownUser = await User.findById(shownUserId);
-    if (!shownUser) return res.status(404).json({ message: "User not found" });
+//     console.log("Body:", req.body);
+//     console.log("Auth User:", req.user);
 
-    shownUser.exposureScore += 1;
-    await shownUser.save();
+//     const shownUser = await User.findById(shownUserId);
 
-    res.json({ success: true });
+//     if (!shownUser) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
 
-  } catch (err) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
+//     shownUser.exposureScore = (shownUser.exposureScore ?? 0) + 1;
+//     shownUser.lastExposureUpdate = new Date();
+
+//     await shownUser.save();
+
+//     res.json({ success: true });
+
+//   } catch (err) {
+//     console.error("===== IMPRESSION ERROR =====");
+//     console.error(err);
+//     console.error(err.stack);
+
+//     res.status(500).json({
+//       message: err.message,
+//     });
+//   }
+// });
 
 
 module.exports = router;

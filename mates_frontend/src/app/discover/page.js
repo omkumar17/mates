@@ -57,19 +57,21 @@ export default function DiscoverPage() {
 
     if (currentUser?.images) {
       currentUser.images.forEach((src) => {
-        const img = new Image();
+        const img = new window.Image();
+        img.decoding = "async";
+        img.loading = "eager";
         img.src = src;
       });
     }
   }, [index, currentUser]);
 
-  useEffect(() => {
-    if (currentUser) {
-      api.post("/user/impression", {
-        shownUserId: currentUser._id,
-      });
-    }
-  }, [currentUser]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     api.post("/user/impression", {
+  //       shownUserId: currentUser._id,
+  //     });
+  //   }
+  // }, [currentUser]);
 
   // =============================
   // Animation Controller
@@ -250,7 +252,7 @@ export default function DiscoverPage() {
 
                 {/* 🔥 IMAGE */}
                 <img
-                  src={currentUser.user.images[currentImageIndex]}
+                  src={currentUser.images[currentImageIndex]}
                   alt={currentUser.name}
                   loading="eager"
                   className="absolute inset-0 h-full w-full object-cover transition-all duration-300"
@@ -258,7 +260,7 @@ export default function DiscoverPage() {
 
                 {/* 🔥 TOP PROGRESS BAR */}
                 <div className="absolute top-2 left-2 right-2 flex gap-1 z-20">
-                  {currentUser.user.images.map((_, i) => (
+                  {currentUser.images.map((_, i) => (
                     <div
                       key={i}
                       className={`flex-1 h-0.75 rounded-full ${i === currentImageIndex
@@ -279,12 +281,22 @@ export default function DiscoverPage() {
                   </h2>
 
                   <p className="text-sm opacity-80 mb-4">
-                    {currentUser.user.bio || currentUser.user.city || currentUser.user.age || currentuser.user.interests?.join(", ")}
+                    {[
+                      currentUser.age && `${currentUser.age} yrs`,
+                      currentUser.city,
+                      currentUser.bio,
+                      currentUser.interests?.slice(0, 3).join(", "),
+                    ]
+                      .filter(Boolean)
+                      .join(" • ")}
                   </p>
 
                   <div className="flex gap-4">
                     <button
-                      onClick={handleSkip}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSkip();
+                      }}
                       disabled={isAnimating}
                       className="flex-1 rounded-full border-2 border-red-400 py-3 font-bold bg-red-500/30 backdrop-blur"
                     >
@@ -292,7 +304,10 @@ export default function DiscoverPage() {
                     </button>
 
                     <button
-                      onClick={handleLike}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleLike();
+                      }}
                       disabled={isAnimating}
                       className="flex-1 rounded-full border-2 border-green-400 py-3 font-bold bg-green-500/30 backdrop-blur"
                     >
