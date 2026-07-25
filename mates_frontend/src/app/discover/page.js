@@ -5,6 +5,7 @@ import api from "@/api/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Image from "next/image";
+import FullPageLoader from "@/components/FullPageLoader";
 
 const EXIT = 420;
 
@@ -185,7 +186,7 @@ export default function DiscoverPage() {
               height={50}
               className="mx-auto mb-6"
             />
-            
+
             <span>Metly</span>
           </div>
         </div>
@@ -194,11 +195,39 @@ export default function DiscoverPage() {
         <div className="flex items-center justify-center min-h-full sm:pl-64 px-2 pt-4 pb-20">
 
           {loading ? (
-            <div>Loading...</div>
+            <FullPageLoader subtitle="Finding new conncetions" />
           ) : !currentUser ? (
-            <p className="opacity-80 absolute top-[50%] text-center">
-              🎉 No more users to discover
-            </p>
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+
+              <div className="h-24 w-24 rounded-full bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center animate-pulse">
+
+                <span className="text-5xl"><Image
+                  src="/logo.png"
+                  alt="metly Logo"
+                  width={50}
+                  height={50}
+                  className="mx-auto mb-6"
+                /></span>
+
+              </div>
+
+              <h2 className="mt-6 text-2xl font-bold">
+                You're all caught up!
+              </h2>
+
+              <p className="mt-2 max-w-sm text-gray-500 dark:text-gray-400">
+                You've seen everyone nearby for now.
+                Check back later to discover new people.
+              </p>
+
+              <button
+                onClick={() => window.location.reload()}
+                className="mt-8 rounded-full bg-linear-to-r from-pink-500 to-rose-500 px-8 py-3 text-white font-semibold hover:scale-105 transition"
+              >
+                Refresh
+              </button>
+
+            </div>
           ) : (
             <div className="w-full flex items-center justify-center h-[calc(100dvh-80px)] sm:max-w-sm">
 
@@ -221,7 +250,7 @@ export default function DiscoverPage() {
 
                 {/* 🔥 IMAGE */}
                 <img
-                  src={currentUser.images[currentImageIndex]}
+                  src={currentUser.user.images[currentImageIndex]}
                   alt={currentUser.name}
                   loading="eager"
                   className="absolute inset-0 h-full w-full object-cover transition-all duration-300"
@@ -229,7 +258,7 @@ export default function DiscoverPage() {
 
                 {/* 🔥 TOP PROGRESS BAR */}
                 <div className="absolute top-2 left-2 right-2 flex gap-1 z-20">
-                  {currentUser.images.map((_, i) => (
+                  {currentUser.user.images.map((_, i) => (
                     <div
                       key={i}
                       className={`flex-1 h-0.75 rounded-full ${i === currentImageIndex
@@ -250,7 +279,7 @@ export default function DiscoverPage() {
                   </h2>
 
                   <p className="text-sm opacity-80 mb-4">
-                    {currentUser.bio || currentUser.city || currentUser.age || currentuser.interests?.join(", ")}
+                    {currentUser.user.bio || currentUser.user.city || currentUser.user.age || currentuser.user.interests?.join(", ")}
                   </p>
 
                   <div className="flex gap-4">

@@ -47,7 +47,7 @@ export default function MatchesPage() {
         className="
           min-h-screen p-4 sm:p-6
           sm:pl-64   /* desktop sidebar spacing */
-          bg-[var(--background)] text-[var(--foreground)]
+          bg-background text-foreground
         "
       >
         <h1 className="text-2xl font-bold text-center mb-6">
@@ -55,9 +55,36 @@ export default function MatchesPage() {
         </h1>
 
         {matches.length === 0 ? (
-          <p className="text-center opacity-80">
-            No matches yet
-          </p>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+
+            <div className="h-24 w-24 rounded-full bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center animate-pulse">
+
+              <span className="text-5xl"><Image
+                src="/logo.png"
+                alt="metly Logo"
+                width={50}
+                height={50}
+                className="mx-auto mb-6"
+              /></span>
+
+            </div>
+
+            <h2 className="mt-6 text-2xl font-bold">
+              Oops, No matches currently!
+            </h2>
+
+            <p className="mt-2 max-w-sm text-gray-500 dark:text-gray-400">
+              Explore and connect with new people to find your perfect match.
+            </p>
+
+            <button
+              onClick={() => window.redirect("/discover")}
+              className="mt-8 rounded-full bg-linear-to-r from-pink-500 to-rose-500 px-8 py-3 text-white font-semibold hover:scale-105 transition"
+            >
+              Discover People
+            </button>
+
+          </div>
         ) : (
           <div className="max-w-md mx-auto space-y-4">
             {matches.map((match) => (
@@ -66,7 +93,7 @@ export default function MatchesPage() {
                 className="
                   p-5 rounded-xl border shadow-sm cursor-pointer 
                   transition hover:shadow-md hover:scale-[1.01]
-                  bg-[var(--card)]
+                  bg-card
                 "
                 onClick={() =>
                   router.push(`/chat/${match.matchId}`)

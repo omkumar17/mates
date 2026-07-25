@@ -205,10 +205,10 @@ router.get("/discover", authMiddleware, async (req, res) => {
         ].slice(0, 20);
 
         // 8️⃣ Update exposure
-        // for (let item of finalFeed) {
-        //     item.user.exposureScore += 1;
-        //     await item.user.save();
-        // }
+        for (let item of finalFeed) {
+            item.user.exposureScore += 1;
+            await item.user.save();
+        }
 
         res.json(finalFeed.map(f => f.user));
 
