@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
+import Image from "next/image";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -24,10 +25,17 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 p-4">
           <span className="text-xl font-semibold border-0">
-            ❤️ Mates
+            <Image 
+              src="/logo.png"
+              alt="metly Logo"
+              width={50}
+              height={50}
+              className="mx-auto mb-6"
+            />
+            <span>Metly</span>
           </span>
         </Link>
-
+          
         {/* Right Section */}
         <div className="flex items-center gap-3 md:order-2 p-4">
 
@@ -97,10 +105,17 @@ export default function Header() {
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2">
                   <span className="text-xl font-semibold border-0">
-                    ❤️ Mates
+                    <Image 
+                      src="/logo.png"
+                      alt="metly Logo"
+                      width={50}
+                      height={50}
+                      className="mx-auto mb-6"
+                    />
+                    <span>Metly</span>
                   </span>
                 </Link>
-
+                  
                 <div className="flex items-center gap-3 md:order-2"></div>
                 {/* Hamburger */}
                 <button

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/api/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import ShowPasswordToggleBtn from "@/components/ShowPasswordToggleBtn";
-
+import Image from "next/image";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function RegisterPage() {
       const { user, token } = res.data;
 
       login(user, token);
-      router.push("/discover");
+      router.push("/profile");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
@@ -54,18 +54,26 @@ export default function RegisterPage() {
       {/* Register Card */}
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-[360px] rounded-2xl border border-white/20 
+        className="relative z-10 w-90 rounded-2xl border border-white/20 
         bg-transparent backdrop-blur-xl p-8 shadow-2xl"
         style={{ color: "var(--foreground)" }}
       >
         {/* Title */}
         <div className="mb-6 text-center">
-          <div className="text-3xl">✨</div>
+          <div className="text-3xl">
+            <Image 
+              src="/logo.png"
+              alt="metly Logo"
+              width={50}
+              height={50}
+              className="mx-auto mb-6"
+            />
+          </div>
           <h1 className="mt-2 text-2xl font-bold tracking-tight">
             Create Account
           </h1>
           <p className="text-sm opacity-70">
-            Join Mates and start connecting
+            Join Metly and start connecting
           </p>
         </div>
 
@@ -116,8 +124,8 @@ export default function RegisterPage() {
               placeholder="Create a strong password"
               className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 pr-14
               outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30"
-              // value={form.password}
-              value="secret123"
+              value={form.password}
+              // value="secret123"
               onChange={handleChange}
               required
             />
@@ -136,14 +144,26 @@ export default function RegisterPage() {
         <button
           disabled={loading}
           className="w-full rounded-lg py-3 font-semibold text-white
-          bg-gradient-to-r from-blue-500 to-indigo-500
+          bg-linear-to-r from-pink-800 to-pink-800
           transition-all duration-300
           hover:scale-[1.02] hover:shadow-lg
           active:scale-[0.98]
           disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {loading ? "Creating account..." : "Register"}
+          {loading ? "Creating account..." : "Create Account"}
         </button>
+
+        {/* Login Link */}
+        <p className="mt-4 text-center text-sm opacity-70">
+          Already have an account?{" "}
+          <button
+            type="button"
+            onClick={() => router.push("/login")}
+            className="text-blue-500 hover:text-blue-400 transition"
+          >
+            Login
+          </button>
+        </p>
 
         {/* Footer */}
         <p className="mt-5 text-center text-xs opacity-60">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
+import Image from "next/image";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -15,11 +16,18 @@ export default function Navbar() {
   return (
     <>
       {/* ================= Desktop Sidebar ================= */}
-      <aside className="hidden sm:flex fixed left-0 top-0 h-screen w-64 flex-col border-r bg-[var(--background)]/90 backdrop-blur-xl z-50">
+      <aside className="hidden sm:flex fixed left-0 top-0 h-screen w-64 flex-col border-r bg-(--background)/90 backdrop-blur-xl z-50">
 
         {/* Logo */}
         <div className="p-6 text-2xl font-bold flex items-center gap-2">
-          ❤️ Mates
+         <Image 
+            src="/logo.png"
+            alt="metly Logo"
+            width={50}
+            height={50}
+            className="mx-auto mb-6"
+          />
+          <span>Metly</span>
         </div>
 
         {/* Navigation */}
@@ -64,7 +72,7 @@ export default function Navbar() {
       </aside>
 
       {/* ================= Mobile Bottom Bar ================= */}
-      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-[var(--background)]/90 backdrop-blur-xl border-t">
+      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-(--background)/90 backdrop-blur-xl border-t">
         <div className="flex justify-around py-2">
 
           <BottomItem href="/discover" active={isActive("/discover")}>
@@ -104,7 +112,7 @@ function SideItem({ href, active, children }) {
       href={href}
       className={`block rounded-xl px-4 py-3 font-medium transition ${
         active
-          ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow"
+          ? "bg-linear-to-r from-pink-500 to-purple-500 text-white shadow"
           : "hover:bg-black/5 dark:hover:bg-white/10"
       }`}
     >
@@ -146,7 +154,7 @@ function Avatar({ name, image, size = "md" }) {
 
   return (
     <div
-      className={`rounded-full bg-gradient-to-br from-pink-500 to-purple-500 
+      className={`rounded-full bg-linear-to-br from-pink-500 to-purple-500 
       flex items-center justify-center text-white font-bold ${sizes[size]}`}
     >
       {name?.[0]?.toUpperCase()}

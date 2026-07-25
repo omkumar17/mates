@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import Header from "@/components/Header";
+import Image from "next/image";
 
 export default function HomePage() {
   const { user } = useAuth();
@@ -61,15 +62,24 @@ export default function HomePage() {
 
       {/* Content */}
         
-      <div className="relative flex flex-col item-center justify-center py-20 w-full min-h-[500px] text-white ">
+      <div className="relative flex flex-col item-center justify-center py-20 w-full min-h-125 text-white ">
 
         {/* <div className="mb-6 text-7xl font-bold">
-          ❤️ Mates
+          
         </div> */}
-
-        <h1 className="text-3xl  sm:text-6xl font-bold mb-5">
-          Discover. Match. Connect.
+        <Image
+          src="/logo.png"
+          alt="metly Logo"
+          width={100}
+          height={100}
+          className="mx-auto mb-6"
+        />
+        <h1 className="text-3xl text-pink-600 sm:text-6xl font-bold mb-5">
+          METLY
         </h1>
+        <h3 className="text-2xl  sm:text-5xl font-bold mb-5">
+          Meet people who matters.
+        </h3>
 
         {/* <p className="max-w-3xl mx-auto text-base sm:text-lg opacity-90 mb-8">
           Find meaningful connections with people who share your interests.
@@ -80,7 +90,7 @@ export default function HomePage() {
 
           {!user && (
             <button
-              onClick={() => router.push("/login")}
+              onClick={() => router.push("/register")}
               className="px-6 py-3 rounded-lg font-extrabold bg-white text-black hover:opacity-90   transition"
             >
               Get Started
@@ -98,16 +108,16 @@ export default function HomePage() {
 
          
             <button
-              onClick={() => router.push("/register")}
+              onClick={() => router.push("/login")}
               className="px-6 py-3 rounded-lg font-semibold border border-white/40 text-white hover:bg-white/10 transition"
             >
-              Create Account
+              Login
             </button>
           
         </div>
 
         <p className="mt-10 text-sm opacity-70">
-          Built with ❤️ using MERN + Next.js
+          Built with ❤️ by Om Kumar
         </p>
       </div>
     </div>

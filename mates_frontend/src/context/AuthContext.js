@@ -6,59 +6,57 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true); // ✅ global loading
+  const [authLoading, setAuthLoading] = useState(true);
 
-  // ------------------------
   // Restore user on refresh
-  // ------------------------
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        console.error("Invalid user in localStorage", err);
+        localStorage.removeItem("user");
+      }
     }
 
     setAuthLoading(false);
   }, []);
 
-  // ------------------------
   // Login
-  // ------------------------
   const login = (userData, token) => {
-    setAuthLoading(true);
-
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.setItem("token", token);
-    setUser(userData);
 
-    // small delay ensures smooth navigation
-    setTimeout(() => {
-      setAuthLoading(false);
-    }, 300);
+    setUser(userData);
+    setAuthLoading(false);
   };
 
-  // ------------------------
-  // Logout
-  // ------------------------
-  const logout = () => {
-    setAuthLoading(true);
+  // Update user after profile edit
+  const updateUser = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
 
+  // Logout
+  const logout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
-    setUser(null);
 
-    setTimeout(() => {
-      setAuthLoading(false);
-    }, 200);
+    setUser(null);
+    setAuthLoading(false);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         authLoading,
         login,
         logout,
+        updateUser,
       }}
     >
       {children}

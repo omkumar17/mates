@@ -6,6 +6,7 @@ import api from "@/api/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import ShowPasswordToggleBtn from "@/components/ShowPasswordToggleBtn";
 import FullPageLoader from "@/components/FullPageLoader";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -55,17 +56,25 @@ export default function LoginPage() {
       {/* Login Card */}
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-[360px] rounded-2xl border border-white/20 
+        className="relative z-10 w-90 rounded-2xl border border-white/20 
         bg-transparent backdrop-blur-xl p-8 shadow-2xl"
       >
         {/* Logo */}
-        <div className="mb-6 text-center">
-          <div className="text-3xl">❤️</div>
+        <div className="mb-6 text-center flex flex-col items-center justify-center gap-2">
+
+          <Image
+            src="/logo.png"
+            alt="metly Logo"
+            width={50}
+            height={50}
+            className="mx-auto mb-6"
+          />
+
           <h1 className="mt-2 text-2xl font-bold">
             Welcome Back
           </h1>
           <p className="text-sm opacity-70">
-            Login to continue to Mates
+            Login to continue to Metly
           </p>
         </div>
 
@@ -126,13 +135,23 @@ export default function LoginPage() {
         {/* Submit */}
         <button
           disabled={submitting}
-          className="w-full rounded-lg py-3 font-semibold text-white
-          bg-gradient-to-r from-blue-500 to-indigo-500
+          className=" w-full rounded-lg py-3 font-semibold text-white
+          bg-linear-to-r from-pink-800 to-pink-800
           disabled:opacity-60"
         >
           {submitting ? "Logging in..." : "Login"}
         </button>
 
+        <div className="mt-4 text-center text-sm opacity-70">
+          Don't have an account?{" "}
+          <button
+            type="button"
+            onClick={() => router.push("/register")}
+            className="text-blue-500 hover:text-blue-600 font-semibold transition"
+          >
+            Register
+          </button>
+        </div>
         <p className="mt-5 text-center text-xs opacity-60">
           Secure login • Encrypted data
         </p>

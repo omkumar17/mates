@@ -19,12 +19,12 @@ router.post("/:targetUserId", authMiddleware, async (req, res) => {
 
     const { viewTimeMs = 5000, interactionDepth = 1 } = req.body;
 
-    // 1️⃣ Prevent liking yourself
+  // 1️⃣ Prevent liking yourself
     if (fromUserId.toString() === toUserId) {
       return res.status(400).json({ message: "You cannot like yourself" });
     }
 
-    // 2️⃣ Check if already liked
+  // 1.5️⃣ Check if already liked
     const alreadyLiked = await Like.findOne({
       fromUser: fromUserId,
       toUser: toUserId,
@@ -33,6 +33,12 @@ router.post("/:targetUserId", authMiddleware, async (req, res) => {
     if (alreadyLiked) {
       return res.status(400).json({ message: "User already liked" });
     }
+
+  // 1.6️⃣ Add to current user's likedUsers array
+    await User.updateOne(
+      { _id: fromUserId },
+      { $addToSet: { likedUsers: toUserId } }
+    );
 
     // 3️⃣ Anti-spam burst detection
     const recentLikeCount = await Like.countDocuments({

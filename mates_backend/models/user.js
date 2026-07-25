@@ -72,6 +72,26 @@ const userSchema = new mongoose.Schema(
         default: "same-city",
       },
     },
+    // Track users this user has interacted with
+    likedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    dislikedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    blockedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
     seenProfiles: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

@@ -9,15 +9,23 @@ const router = express.Router();
 
 router.post("/skip/:targetUserId", authMiddleware, async (req, res) => {
   try {
-    const currentUser = await User.findById(req.user._id);
+    const currentUserId = req.user._id;
+    const targetUserId = req.params.targetUserId;
 
-    currentUser.seenProfiles.push({
-      user: req.params.targetUserId,
-      swipeType: "skip",
-      lastSeenAt: Date.now(),
-    });
-
-    await currentUser.save();
+    // Add to seenProfiles
+    await User.updateOne(
+      { _id: currentUserId },
+      {
+        $push: {
+          seenProfiles: {
+            user: targetUserId,
+            swipeType: "skip",
+            lastSeenAt: Date.now(),
+          },
+        },
+        $addToSet: { dislikedUsers: targetUserId },
+      }
+    );
 
     res.json({ message: "Skipped" });
   } catch (err) {

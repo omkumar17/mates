@@ -1,6 +1,7 @@
 const express = require("express");
 const { applyDecay, calculatePriority } = require("../services/feedAlgorithm");
 // const { applyDecay, calculatePriority } = require("../services/fairnessService");
+const { preferenceFilter } = require("../services/preferenceFilter");
 const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/user");
 const Like = require("../models/like");
@@ -130,7 +131,13 @@ router.get("/discover", authMiddleware, async (req, res) => {
             gender: { $in: preferredGenders }
         }).select("-passwordHash");
 
-        const poolSize = allUsers.length;
+        console.log(`\nTotal users fetched: ${allUsers.length}`);
+
+        // 🔥 Apply comprehensive preference filter BEFORE feed algorithm
+        const filteredUsers = preferenceFilter(currentUser, allUsers);
+        console.log(`After preference filter: ${filteredUsers.length} users remain`);
+
+        const poolSize = filteredUsers.length;
 
         // 5️⃣ Create map of seen profiles
         const seenMap = new Map();
@@ -140,7 +147,7 @@ router.get("/discover", authMiddleware, async (req, res) => {
 
         const ranked = [];
 
-        for (let user of allUsers) {
+        for (let user of filteredUsers) {
 
             user = applyDecay(user);
 
@@ -178,6 +185,7 @@ router.get("/discover", authMiddleware, async (req, res) => {
         ranked.forEach(r => {
             console.log({
                 name: r.user.name,
+                user:r.user,
                 exposure: r.user.exposureScore.toFixed(2),
                 priority: r.priority.toFixed(2),
                 reappear: r.reappear

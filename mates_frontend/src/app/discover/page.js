@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import api from "@/api/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Image from "next/image";
 
 const EXIT = 420;
 
@@ -177,7 +178,15 @@ export default function DiscoverPage() {
         {/* Mobile Logo */}
         <div className="fixed top-4 left-4 z-50 md:hidden">
           <div className="flex items-center gap-2 text-lg font-bold bg-black/30 backdrop-blur px-3 py-1 rounded-lg text-white">
-            ❤️ <span>Mates</span>
+            <Image
+              src="/logo.png"
+              alt="metly Logo"
+              width={50}
+              height={50}
+              className="mx-auto mb-6"
+            />
+            
+            <span>Metly</span>
           </div>
         </div>
 
@@ -191,12 +200,16 @@ export default function DiscoverPage() {
               🎉 No more users to discover
             </p>
           ) : (
-            <div className="w-full h-[calc(100dvh-80px)] sm:max-w-sm">
+            <div className="w-full flex items-center justify-center h-[calc(100dvh-80px)] sm:max-w-sm">
 
               {/* CARD */}
               <div
                 key={currentUser._id}
-                className="relative h-full shadow-2xl overflow-hidden transition-transform duration-300 rounded-xl bg-black"
+                className="relative 
+        mx-auto
+        w-[min(95vw,420px)]
+        aspect-9/16
+        max-h-[calc(100dvh-90px)] shadow-2xl overflow-hidden transition-transform duration-300 rounded-xl bg-black"
                 style={{
                   transform: `translateX(${offsetX}px) rotate(${offsetX / 18}deg) scale(${1 - Math.abs(offsetX) / 3000})`,
                 }}
@@ -219,11 +232,10 @@ export default function DiscoverPage() {
                   {currentUser.images.map((_, i) => (
                     <div
                       key={i}
-                      className={`flex-1 h-0.75 rounded-full ${
-                        i === currentImageIndex
-                          ? "bg-white"
-                          : "bg-white/40 border border-dashed border-white"
-                      }`}
+                      className={`flex-1 h-0.75 rounded-full ${i === currentImageIndex
+                        ? "bg-white"
+                        : "bg-white/40 border border-dashed border-white"
+                        }`}
                     />
                   ))}
                 </div>
@@ -238,7 +250,7 @@ export default function DiscoverPage() {
                   </h2>
 
                   <p className="text-sm opacity-80 mb-4">
-                    {currentUser.email}
+                    {currentUser.bio || currentUser.city || currentUser.age || currentuser.interests?.join(", ")}
                   </p>
 
                   <div className="flex gap-4">
