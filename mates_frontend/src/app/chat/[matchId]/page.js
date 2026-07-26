@@ -264,11 +264,6 @@ export default function ChatPage() {
         <div
           className="
             flex flex-col h-dvh sm:pl-64 bg-background text-foreground overflow-hidden transition-all"
-          style={{
-            paddingBottom: keyboardOffset
-              ? `${keyboardOffset}px`
-              : "4rem",
-          }}
         >
           {/* Header */}
           <div
@@ -377,16 +372,15 @@ export default function ChatPage() {
           {/* Input */}
           <div
             className="
-        flex-shrink-0
+        shrink-0
         border-t
         bg-background
         p-3
     "
+
             style={{
-              paddingBottom: keyboardOffset
-                ? `${keyboardOffset}px`
-                : "12px",
-              transition: "padding-bottom .25s ease",
+              transform: `translateY(-${keyboardOffset}px)`,
+              transition: "transform .25s ease",
             }}
           >
             <div className="flex items-center gap-2">
