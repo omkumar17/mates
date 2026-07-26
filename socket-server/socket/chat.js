@@ -1,4 +1,5 @@
 const Match = require("../models/match");
+const Message = require("../models/message");
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
@@ -34,22 +35,64 @@ module.exports = (io) => {
     });
 
     // Mark messages as seen
-    socket.on("markSeen", ({ matchId }) => {
-      socket.to(matchId).emit("seenUpdate");
+    socket.on("markSeen", async ({ matchId }) => {
+      try {
+        const unseenMessages = await Message.find({
+          match: matchId,
+          sender: { $ne: socket.user._id },
+          seen: false,
+        });
+
+        const ids = unseenMessages.map((m) => m._id);
+
+        await Message.updateMany(
+          {
+            _id: { $in: ids },
+          },
+          {
+            $set: { seen: true },
+          }
+        );
+
+        io.to(matchId).emit("seenUpdate", ids);
+      } catch (err) {
+        console.error("Mark seen error:", err);
+      }
     });
 
     // Send and broadcast message
-    socket.on("sendMessage", (data) => {
-      const { matchId, message } = data;
+    socket.on("sendMessage", async ({ matchId, message }) => {
+      try {
 
-      socket.to(matchId).emit("receiveMessage", {
-        ...message,
-        sender: {
-          _id: socket.user._id,
-          name: socket.user.name,
-        },
-        createdAt: new Date(),
-      });
+        const match = await Match.findOne({
+          _id: matchId,
+          users: socket.user._id,
+        });
+
+        if (!match) {
+          return socket.emit("errorMessage", "Unauthorized");
+        }
+
+        const savedMessage = await Message.create({
+          match: matchId,
+          sender: socket.user._id,
+          text: message.text,
+        });
+
+        io.to(matchId).emit("receiveMessage", {
+          _id: savedMessage._id,
+          text: savedMessage.text,
+          sender: {
+            _id: socket.user._id,
+            name: socket.user.name,
+          },
+          createdAt: savedMessage.createdAt,
+          seen: false,
+        });
+
+      } catch (err) {
+        console.error(err);
+      }
     });
 
     // Disconnect

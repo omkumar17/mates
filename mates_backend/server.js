@@ -13,6 +13,7 @@ const app = express();
 app.use(cors()); app.use(
   cors({
     origin: "https://metlyconnect.vercel.app",
+    // origin: "*", // Allow all origins for testing purposes
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   })
