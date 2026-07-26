@@ -5,7 +5,7 @@ let socket;
 export const connectSocket = () => {
   const token = localStorage.getItem("token");
 
-  socket = io(`${process.env.NEXT_PUBLIC_API_URL}`, {
+  socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
     auth: {
       token,
     },

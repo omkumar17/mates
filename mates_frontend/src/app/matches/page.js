@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import FullPageLoader from "@/components/FullPageLoader";
+import Image from "next/image";
 
 export default function MatchesPage() {
   const { user, authLoading } = useAuth();
