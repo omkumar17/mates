@@ -183,7 +183,7 @@ export default function ChatPage() {
       ) : (
         <div
           className="
-            flex flex-col relative min-h-full bg-[var(--background)] text-[var(--foreground)] overflow-hidden pb-20 sm:pb-0 sm:pl-64 /* desktop sidebar spacing */ transition-all
+            flex flex-col relative min-h-full bg-background text-foreground overflow-hidden pb-20 sm:pb-0 sm:pl-64 /* desktop sidebar spacing */ transition-all
           "
           style={{
             paddingBottom: keyboardOffset
@@ -192,7 +192,7 @@ export default function ChatPage() {
           }}
         >
           {/* Header */}
-          <div className="p-4 border-b font-semibold sticky top-0 bg-[var(--background)]/90 backdrop-blur z-10 flex items-center gap-3">
+          <div className="p-4 border-b font-semibold sticky top-0 bg-background/90 backdrop-blur z-10 flex items-center gap-3">
             <img
               src={`https://api.dicebear.com/7.x/initials/svg?seed=${chatUser?.name}`}
               className="w-9 h-9 rounded-full"
@@ -230,8 +230,8 @@ export default function ChatPage() {
                       className={`px-4 py-2 rounded-2xl text-sm shadow
                         ${
                           isMe
-                            ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-br-sm"
-                            : "bg-[var(--card)] text-[var(--foreground)] rounded-bl-sm"
+                            ? "bg-linear-to-r from-pink-500 to-purple-500 text-white rounded-br-sm"
+                            : "bg-card text-foreground rounded-bl-sm"
                         }
                       `}
                     >
@@ -264,7 +264,7 @@ export default function ChatPage() {
             {/* Typing Indicator */}
             {otherTyping && (
               <div className="flex justify-start">
-                <div className="px-3 py-2 rounded-xl bg-[var(--card)] text-xs opacity-70 animate-pulse">
+                <div className="px-3 py-2 rounded-xl bg-card text-xs opacity-70 animate-pulse">
                   Typing...
                 </div>
               </div>
@@ -274,7 +274,7 @@ export default function ChatPage() {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t flex items-center gap-2 bg-[var(--background)] sticky bottom-0">
+          <div className="p-3 border-t flex items-center gap-2 bg-background sticky bottom-0">
             <input
               value={text}
               onChange={(e) => handleTyping(e.target.value)}
@@ -287,7 +287,7 @@ export default function ChatPage() {
               onClick={sendMessage}
               className="
                 rounded-full px-4 py-2 text-white font-medium
-                bg-gradient-to-r from-pink-500 to-purple-500
+                bg-linear-to-r from-pink-500 to-purple-500
                 hover:opacity-90 active:scale-95 transition
               "
             >
