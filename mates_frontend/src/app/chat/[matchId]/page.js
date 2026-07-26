@@ -261,10 +261,7 @@ export default function ChatPage() {
           Loading chat...
         </div>
       ) : (
-        <div
-          className="
-            flex flex-col h-dvh sm:pl-64 bg-background text-foreground overflow-hidden transition-all"
-        >
+        <div className="flex flex-col h-dvh sm:pl-64 pb-16 sm:pb-0 bg-background text-foreground overflow-hidden">
           {/* Header */}
           <div
             className="
