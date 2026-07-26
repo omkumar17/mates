@@ -48,7 +48,7 @@ export default function Navbar() {
       <aside className="hidden sm:flex fixed left-0 top-0 h-screen w-64 flex-col border-r bg-(--background)/90 backdrop-blur-xl z-50">
 
         {/* Logo */}
-        <div className="p-6 text-2xl font-bold flex items-center gap-2">
+        <div className="p-6 text-2xl font-bold flex flex-col items-center gap-2">
           <Image
             src="/logo.png"
             alt="Metly Logo"
@@ -118,25 +118,25 @@ export default function Navbar() {
 
           <BottomItem href="/discover" active={isActive("/discover")}>
             🔥
-            <span className="text-xs">Discover</span>
+            <span className="text-sm">Discover</span>
           </BottomItem>
 
           <BottomItem href="/matches" active={isActive("/matches")}>
             💬
-            <span className="text-xs">Matches</span>
+            <span className="text-sm">Matches</span>
           </BottomItem>
 
           <BottomItem href="/profile" active={isActive("/profile")}>
             <Avatar name={user.name} image={user.image} size="sm" />
-            <span className="text-xs">{user.name}</span>
+            <span className="text-sm">{user.name}</span>
           </BottomItem>
 
           <button
             onClick={logout}
-            className="flex flex-col items-center gap-1 text-red-500"
+            className="flex flex-col items-center gap-1 font-bold text-red-500"
           >
             🚪
-            <span className="text-xs">Logout</span>
+            <span className="text-sm">Logout</span>
           </button>
         </div>
       </nav>

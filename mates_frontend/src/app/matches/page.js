@@ -46,14 +46,25 @@ export default function MatchesPage() {
     <ProtectedRoute>
       <div
         className="
-          min-h-screen p-4 sm:p-6
-          sm:pl-64   /* desktop sidebar spacing */
-          bg-background text-foreground
-        "
+    min-h-dvh
+    sm:pl-64
+    pb-16
+    sm:pb-0
+    bg-background
+    text-foreground
+  "
       >
-        <h1 className="text-2xl font-bold text-center mb-6">
-          Your Matches
-        </h1>
+        <div className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md px-5 py-4">
+
+          <h1 className="text-2xl font-bold">
+            Matches
+          </h1>
+
+          <p className="text-sm opacity-60">
+            {matches.length} {matches.length === 1 ? "match" : "matches"}
+          </p>
+
+        </div>
 
         {matches.length === 0 ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
@@ -79,7 +90,7 @@ export default function MatchesPage() {
             </p>
 
             <button
-              onClick={() => window.redirect("/discover")}
+              onClick={() => router.push("/discover")}
               className="mt-8 rounded-full bg-linear-to-r from-pink-500 to-rose-500 px-8 py-3 text-white font-semibold hover:scale-105 transition"
             >
               Discover People
@@ -87,25 +98,45 @@ export default function MatchesPage() {
 
           </div>
         ) : (
-          <div className="max-w-md mx-auto space-y-4">
+          <div className="mx-auto max-w-2xl space-y-3 p-4">
             {matches.map((match) => (
               <div
                 key={match.matchId}
+                onClick={() => router.push(`/chat/${match.matchId}`)}
                 className="
-                  p-5 rounded-xl border shadow-sm cursor-pointer 
-                  transition hover:shadow-md hover:scale-[1.01]
-                  bg-card
-                "
-                onClick={() =>
-                  router.push(`/chat/${match.matchId}`)
-                }
+        flex
+        items-center
+        gap-4
+        rounded-2xl
+        border
+        bg-card
+        p-4
+        cursor-pointer
+        transition
+        hover:shadow-lg
+        hover:-translate-y-0.5
+    "
               >
-                <h2 className="font-semibold">
-                  {match.user.name}
-                </h2>
-                <p className="text-sm opacity-80">
-                  {match.user.email}
-                </p>
+                <img
+                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${match.user.name}`}
+                  className="h-14 w-14 rounded-full"
+                />
+
+                <div className="flex-1 min-w-0">
+
+                  <h2 className="font-semibold truncate">
+                    {match.user.name}
+                  </h2>
+
+                  {/* <p className="text-sm opacity-60 truncate">
+                    {match.user.email}
+                  </p> */}
+
+                </div>
+
+                <div className="text-xl opacity-40">
+                  →
+                </div>
               </div>
             ))}
           </div>
