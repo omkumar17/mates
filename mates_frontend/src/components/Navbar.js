@@ -5,12 +5,41 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    if (!window.visualViewport) return;
+
+    const viewport = window.visualViewport;
+
+    const updateKeyboard = () => {
+      const keyboardHeight =
+        window.innerHeight -
+        viewport.height -
+        viewport.offsetTop;
+
+      setKeyboardVisible(keyboardHeight > 100);
+    };
+
+    updateKeyboard();
+
+    viewport.addEventListener("resize", updateKeyboard);
+    viewport.addEventListener("scroll", updateKeyboard);
+
+    return () => {
+      viewport.removeEventListener("resize", updateKeyboard);
+      viewport.removeEventListener("scroll", updateKeyboard);
+    };
+  }, []);
+
   if (!user) return null;
+
   const isActive = (path) => pathname.startsWith(path);
 
   return (
@@ -20,9 +49,9 @@ export default function Navbar() {
 
         {/* Logo */}
         <div className="p-6 text-2xl font-bold flex items-center gap-2">
-         <Image 
+          <Image
             src="/logo.png"
-            alt="metly Logo"
+            alt="Metly Logo"
             width={50}
             height={50}
             className="mx-auto mb-6"
@@ -49,7 +78,6 @@ export default function Navbar() {
         <div className="p-4 border-t space-y-3">
           <ThemeToggle />
 
-          {/* Profile Preview */}
           <Link
             href="/profile"
             className="flex items-center gap-3 rounded-xl p-3 hover:bg-black/5 dark:hover:bg-white/10 transition"
@@ -61,7 +89,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Logout */}
           <button
             onClick={logout}
             className="w-full rounded-lg py-2 text-red-500 hover:bg-red-500/10 transition text-sm font-medium"
@@ -72,7 +99,21 @@ export default function Navbar() {
       </aside>
 
       {/* ================= Mobile Bottom Bar ================= */}
-      <nav className="sm:hidden fixed bottom-0 inset-x-0 z-50 bg-(--background)/90 backdrop-blur-xl border-t">
+      <nav
+        className={`
+          sm:hidden
+          fixed
+          bottom-0
+          inset-x-0
+          z-50
+          bg-(--background)/90
+          backdrop-blur-xl
+          border-t
+          transition-transform
+          duration-300
+          ${keyboardVisible ? "translate-y-full" : "translate-y-0"}
+        `}
+      >
         <div className="flex justify-around py-2">
 
           <BottomItem href="/discover" active={isActive("/discover")}>
@@ -90,7 +131,6 @@ export default function Navbar() {
             <span className="text-xs">{user.name}</span>
           </BottomItem>
 
-          {/* Logout Button */}
           <button
             onClick={logout}
             className="flex flex-col items-center gap-1 text-red-500"
@@ -154,7 +194,7 @@ function Avatar({ name, image, size = "md" }) {
 
   return (
     <div
-      className={`rounded-full bg-linear-to-br from-pink-500 to-purple-500 
+      className={`rounded-full bg-linear-to-br from-pink-500 to-purple-500
       flex items-center justify-center text-white font-bold ${sizes[size]}`}
     >
       {name?.[0]?.toUpperCase()}

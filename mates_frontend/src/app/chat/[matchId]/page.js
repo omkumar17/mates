@@ -15,7 +15,7 @@ export default function ChatPage() {
   const [text, setText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [otherTyping, setOtherTyping] = useState(false);
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  // const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [chatUser, setChatUser] = useState(null); // 👈 store full user
 
   const messagesEndRef = useRef(null);
@@ -153,36 +153,36 @@ export default function ChatPage() {
   // ------------------------
   // Keyboard Detection (Mobile)
   // ------------------------
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (!window.visualViewport) return;
+  //   if (!window.visualViewport) return;
 
-    const viewport = window.visualViewport;
+  //   const viewport = window.visualViewport;
 
-    const updateKeyboard = () => {
+  //   const updateKeyboard = () => {
 
-      const offset =
-        window.innerHeight -
-        viewport.height -
-        viewport.offsetTop;
+  //     const offset =
+  //       window.innerHeight -
+  //       viewport.height -
+  //       viewport.offsetTop;
 
-      setKeyboardOffset(
-        offset > 0 ? offset : 0
-      );
+  //     setKeyboardOffset(
+  //       offset > 0 ? offset : 0
+  //     );
 
-    };
+  //   };
 
-    viewport.addEventListener("resize", updateKeyboard);
-    viewport.addEventListener("scroll", updateKeyboard);
+  //   viewport.addEventListener("resize", updateKeyboard);
+  //   viewport.addEventListener("scroll", updateKeyboard);
 
-    return () => {
+  //   return () => {
 
-      viewport.removeEventListener("resize", updateKeyboard);
-      viewport.removeEventListener("scroll", updateKeyboard);
+  //     viewport.removeEventListener("resize", updateKeyboard);
+  //     viewport.removeEventListener("scroll", updateKeyboard);
 
-    };
+  //   };
 
-  }, []);
+  // }, []);
 
   // ------------------------
   // Send Message
@@ -378,10 +378,10 @@ export default function ChatPage() {
         p-3
     "
 
-            style={{
-              transform: `translateY(-${keyboardOffset}px)`,
-              transition: "transform .25s ease",
-            }}
+            // style={{
+            //   transform: `translateY(-${keyboardOffset}px)`,
+            //   transition: "transform .25s ease",
+            // }}
           >
             <div className="flex items-center gap-2">
               <input
