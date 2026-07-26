@@ -10,8 +10,13 @@ connectDB(); // connect db
 const app = express();
 
 // middleware
-app.use(cors());
-app.use(express.json()); // parse body as json
+app.use(cors()); app.use(
+  cors({
+    origin: "https://metlyconnect.vercel.app",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
+); app.use(express.json()); // parse body as json
 
 // routes
 app.get("/", (req, res) => {
