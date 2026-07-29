@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
-
+import Image from "next/image";
 import api from "@/api/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import ProfileForm from "@/components/ProfileForm";
+import FullPageLoader from "@/components/FullPageLoader";
+import Swal from "sweetalert2";
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
+  const { logout } = useAuth();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -56,9 +59,50 @@ export default function ProfilePage() {
     }
   };
 
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Logout?",
+      html: "<p>You will need to login again to continue.</p>",
+      icon: "warning",
+      background: "#ffffff",
+      color: "#111827",
+       showCancelButton: true,
+      confirmButtonColor: "#ec4899",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Stay",
+    });
+
+    if (result.isConfirmed) {
+      logout();
+    }
+  };
+
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-linear-to-br from-pink-50 via-white to-rose-100 dark:from-neutral-900 dark:via-neutral-950 dark:to-black">
+      <div className="min-h-screen bg-linear-to-br pt-5">
+        <div className="md:hidden flex justify-between px-4">
+          <div className="relative top-4 right-4 z-50 md:hidden">
+            <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-foreground">
+              <Image
+                src="/logo.png"
+                alt="metly Logo"
+                width={50}
+                height={50}
+                className="mx-auto mb-6"
+              />
+
+              <span>Metly</span>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold bg-foreground text-red-500"
+          >
+            🚪
+            <span className="text-sm">Logout</span>
+          </button>
+        </div>
 
         {/* Decorative Background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -72,24 +116,7 @@ export default function ProfilePage() {
         <div className="relative flex min-h-screen items-center justify-center px-4 py-10">
 
           {loading ? (
-            <div className="w-full max-w-md rounded-3xl bg-white dark:bg-neutral-900 shadow-2xl p-6 animate-pulse">
-
-              <div className="mx-auto h-24 w-24 rounded-full bg-gray-300 mb-6" />
-
-              <div className="h-8 w-52 rounded bg-gray-300 mx-auto mb-8" />
-
-              <div className="space-y-4">
-
-                <div className="h-12 rounded bg-gray-300" />
-                <div className="h-12 rounded bg-gray-300" />
-                <div className="h-12 rounded bg-gray-300" />
-                <div className="h-24 rounded bg-gray-300" />
-                <div className="h-36 rounded bg-gray-300" />
-
-                <div className="h-12 rounded bg-gray-300 mt-8" />
-
-              </div>
-            </div>
+            <FullPageLoader />
           ) : (
             <div className="w-full max-w-md">
 
@@ -109,7 +136,7 @@ export default function ProfilePage() {
 
               {/* Progress */}
 
-              <div className="mb-6">
+              {/* <div className="mb-6">
 
                 <div className="flex justify-between text-sm mb-2">
                   <span>Profile Completion</span>
@@ -122,7 +149,7 @@ export default function ProfilePage() {
 
                 </div>
 
-              </div>
+              </div> */}
 
               {/* Form */}
 
@@ -140,9 +167,9 @@ export default function ProfilePage() {
         {/* Full Screen Saving Overlay */}
 
         {saving && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="fixed inset-0 flex items-center justify-center z-50">
 
-            <div className="rounded-2xl bg-white dark:bg-neutral-900 p-8 flex flex-col items-center gap-4 shadow-xl">
+            <div className="rounded-2xl  p-8 flex flex-col items-center gap-4 shadow-xl">
 
               <div className="h-12 w-12 rounded-full border-4 border-pink-500 border-t-transparent animate-spin" />
 

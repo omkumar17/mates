@@ -179,8 +179,8 @@ export default function DiscoverPage() {
       <div className="relative min-h-full bg-background text-foreground overflow-hidden">
 
         {/* Mobile Logo */}
-        <div className="fixed top-4 left-4 z-50 md:hidden">
-          <div className="flex items-center gap-2 text-lg font-bold bg-black/30 backdrop-blur px-3 py-1 rounded-lg text-white">
+        <div className="fixed top-4 right-4 z-50 md:hidden">
+          <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-foreground">
             <Image
               src="/logo.png"
               alt="metly Logo"

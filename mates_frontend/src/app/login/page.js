@@ -51,12 +51,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="loginHome relative min-h-screen p-4 flex items-center justify-center overflow-hidden">
+    <div className="loginHome relative h-full text-white p-4 flex items-center justify-center overflow-hidden">
 
       {/* Login Card */}
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-90 rounded-2xl border border-white/20 
+        className="relative z-10  w-90 rounded-2xl border border-white/20 
         bg-transparent backdrop-blur-xl p-8 shadow-2xl"
       >
         {/* Logo */}
@@ -91,7 +91,7 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="you@example.com"
-            className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 outline-none"
+            className="mt-1 w-full text-white rounded-lg border border-white/10 bg-transparent p-3 outline-none"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -106,7 +106,7 @@ export default function LoginPage() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 pr-14 outline-none"
+              className="mt-1 w-full text-white rounded-lg border border-white/10 bg-transparent p-3 pr-14 outline-none"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

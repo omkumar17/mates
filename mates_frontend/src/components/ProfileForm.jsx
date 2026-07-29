@@ -128,7 +128,7 @@ export default function ProfileForm({
       });
       return;
     }
-      
+
 
     if (!form.age || !form.gender) {
       // alert("Fill required fields");
@@ -139,13 +139,21 @@ export default function ProfileForm({
       return;
     }
 
-    onSubmit(form);
+    onSubmit({
+      ...form,
+      age: Number(form.age),
+      preferences: {
+        ...form.preferences,
+        minAge: Number(form.preferences.minAge),
+        maxAge: Number(form.preferences.maxAge),
+      },
+    });
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl p-8 space-y-8"
+      className=" rounded-3xl shadow-2xl p-8 space-y-8"
     >
       {/* ========================= */}
       {/* PHOTO UPLOAD */}
@@ -346,7 +354,7 @@ export default function ProfileForm({
         </div>
 
       </div>
-            {/* ========================= */}
+      {/* ========================= */}
       {/* INTERESTS */}
       {/* ========================= */}
 
@@ -389,19 +397,18 @@ export default function ProfileForm({
                     ...form,
                     interests: selected
                       ? form.interests.filter(
-                          (i) => i !== interest
-                        )
+                        (i) => i !== interest
+                      )
                       : [
-                          ...form.interests,
-                          interest,
-                        ],
+                        ...form.interests,
+                        interest,
+                      ],
                   })
                 }
-                className={`px-4 py-2 rounded-full border transition ${
-                  selected
+                className={`px-4 py-2 rounded-full border transition ${selected
                     ? "bg-pink-500 text-white border-pink-500"
                     : "hover:border-pink-500"
-                }`}
+                  }`}
               >
                 {interest}
               </button>
@@ -464,21 +471,20 @@ export default function ProfileForm({
                       ...form.preferences,
                       lookingFor: exists
                         ? form.preferences.lookingFor.filter(
-                            (x) => x !== item.id
-                          )
+                          (x) => x !== item.id
+                        )
                         : [
-                            ...form.preferences
-                              .lookingFor,
-                            item.id,
-                          ],
+                          ...form.preferences
+                            .lookingFor,
+                          item.id,
+                        ],
                     },
                   });
                 }}
-                className={`rounded-2xl border p-5 transition text-center ${
-                  active
+                className={`rounded-2xl border p-5 transition text-center ${active
                     ? "bg-pink-500 text-white border-pink-500"
                     : "hover:border-pink-500"
-                }`}
+                  }`}
               >
                 <div className="text-3xl">
 
@@ -542,21 +548,20 @@ export default function ProfileForm({
                       ...form.preferences,
                       genders: exists
                         ? form.preferences.genders.filter(
-                            (g) => g !== gender
-                          )
+                          (g) => g !== gender
+                        )
                         : [
-                            ...form.preferences
-                              .genders,
-                            gender,
-                          ],
+                          ...form.preferences
+                            .genders,
+                          gender,
+                        ],
                     },
                   });
                 }}
-                className={`px-6 py-3 rounded-full border transition ${
-                  active
+                className={`px-6 py-3 rounded-full border transition ${active
                     ? "bg-pink-500 text-white border-pink-500"
                     : "hover:border-pink-500"
-                }`}
+                  }`}
               >
                 {gender.charAt(0).toUpperCase() +
                   gender.slice(1)}
@@ -600,7 +605,7 @@ export default function ProfileForm({
                   ...form,
                   preferences: {
                     ...form.preferences,
-                    minAge: Number(e.target.value),
+                    minAge: e.target.value,
                   },
                 })
               }
@@ -627,7 +632,7 @@ export default function ProfileForm({
                   ...form,
                   preferences: {
                     ...form.preferences,
-                    maxAge: Number(e.target.value),
+                    maxAge: e.target.value,
                   },
                 })
               }

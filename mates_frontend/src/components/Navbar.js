@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import ThemeToggle from "@/components/ThemeToggle";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -42,10 +43,29 @@ export default function Navbar() {
 
   const isActive = (path) => pathname.startsWith(path);
 
+  const handleLogout = async () => {
+      const result = await Swal.fire({
+        title: "Logout?",
+        html: "<p>You will need to login again to continue.</p>",
+        icon: "warning",
+        background: "#ffffff",
+        color: "#111827",
+         showCancelButton: true,
+        confirmButtonColor: "#ec4899",
+        cancelButtonColor: "#6b7280",
+        confirmButtonText: "Yes, Logout",
+        cancelButtonText: "Stay",
+      });
+  
+      if (result.isConfirmed) {
+        logout();
+      }
+    };
+
   return (
     <>
       {/* ================= Desktop Sidebar ================= */}
-      <aside className="hidden sm:flex fixed left-0 top-0 h-screen w-64 flex-col border-r bg-(--background)/90 backdrop-blur-xl z-50">
+      <aside className="hidden sm:flex fixed left-0 top-0 h-screen w-64 flex-col text-white border-r bg-pink-900 backdrop-blur-xl z-50">
 
         {/* Logo */}
         <div className="p-6 text-2xl font-bold flex flex-col items-center gap-2">
@@ -60,7 +80,7 @@ export default function Navbar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 space-y-2">
+        <nav className="flex-1 px-4 space-y-2 ">
           <SideItem href="/discover" active={isActive("/discover")}>
             🔥 Discover
           </SideItem>
@@ -75,23 +95,11 @@ export default function Navbar() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t space-y-3">
+        <div className="sm:bg-pink-900/20 p-4 flex justify-between border-t space-y-3">
           <ThemeToggle />
-
-          <Link
-            href="/profile"
-            className="flex items-center gap-3 rounded-xl p-3 hover:bg-black/5 dark:hover:bg-white/10 transition"
-          >
-            <Avatar name={user.name} image={user.image} />
-            <div>
-              <p className="text-sm font-semibold">{user.name}</p>
-              <p className="text-xs opacity-60">View profile</p>
-            </div>
-          </Link>
-
           <button
-            onClick={logout}
-            className="w-full rounded-lg py-2 text-red-500 hover:bg-red-500/10 transition text-sm font-medium"
+            onClick={handleLogout}
+            className="bg-black p-4 rounded-lg py-2 text-red-500 cursor-pointer transition text-sm font-medium"
           >
             🚪 Logout
           </button>
@@ -131,13 +139,9 @@ export default function Navbar() {
             <span className="text-sm">{user.name}</span>
           </BottomItem>
 
-          <button
-            onClick={logout}
-            className="flex flex-col items-center gap-1 font-bold text-red-500"
-          >
-            🚪
-            <span className="text-sm">Logout</span>
-          </button>
+           <ThemeToggle />
+
+          
         </div>
       </nav>
     </>

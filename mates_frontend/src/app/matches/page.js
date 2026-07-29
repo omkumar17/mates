@@ -46,7 +46,7 @@ export default function MatchesPage() {
     <ProtectedRoute>
       <div
         className="
-    min-h-dvh
+    min-h-svh
     sm:pl-64
     pb-16
     sm:pb-0
@@ -54,15 +54,31 @@ export default function MatchesPage() {
     text-foreground
   "
       >
-        <div className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md px-5 py-4">
-
-          <h1 className="text-2xl font-bold">
+        <div className="sticky top-0 z-40 border-b bg-pink-700 text-white backdrop-blur-md px-5 py-4">
+          <div className="flex flex-col">          <h1 className="text-2xl font-bold">
             Matches
           </h1>
 
-          <p className="text-sm opacity-60">
-            {matches.length} {matches.length === 1 ? "match" : "matches"}
-          </p>
+            <p className="text-sm opacity-60">
+              {matches.length} {matches.length === 1 ? "match" : "matches"}
+            </p>
+            <div className="fixed top-4 right-4 z-50 md:hidden">
+              <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-white " style={{
+                filter: "grayscale(100%) brightness(1000%)",
+              }}>
+                <Image
+                  src="/logo.png"
+                  alt="metly Logo"
+                  width={50}
+                  height={50}
+                  className="mx-auto mb-6"
+                />
+
+                <span>Metly</span>
+              </div>
+            </div>
+          </div>
+
 
         </div>
 
@@ -98,7 +114,7 @@ export default function MatchesPage() {
 
           </div>
         ) : (
-          <div className="mx-auto max-w-2xl space-y-3 p-4">
+          <div className="relative mx-auto max-w-2xl space-y-3 p-4">
             {matches.map((match) => (
               <div
                 key={match.matchId}
@@ -108,7 +124,7 @@ export default function MatchesPage() {
         items-center
         gap-4
         rounded-2xl
-        border
+        
         bg-card
         p-4
         cursor-pointer
@@ -140,6 +156,8 @@ export default function MatchesPage() {
               </div>
             ))}
           </div>
+
+
         )}
       </div>
     </ProtectedRoute>

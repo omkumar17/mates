@@ -47,16 +47,16 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="loginHome relative min-h-screen p-4 flex items-center justify-center overflow-hidden">
+    <div className="loginHome text-white relative h-full p-4 flex items-center justify-center overflow-scroll">
 
       {/* Background handled by .loginHome CSS */}
 
       {/* Register Card */}
       <form
         onSubmit={handleSubmit}
-        className="relative z-10 w-90 rounded-2xl border border-white/20 
+        className="relative z-10 w-90 rounded-2xl border text-white border-white/20 
         bg-transparent backdrop-blur-xl p-8 shadow-2xl"
-        style={{ color: "var(--foreground)" }}
+        
       >
         {/* Title */}
         <div className="mb-6 text-center">
@@ -90,7 +90,7 @@ export default function RegisterPage() {
           <input
             name="name"
             placeholder="John Doe"
-            className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 
+            className="mt-1 w-full text-white rounded-lg border border-white/10 bg-transparent p-3 
             outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30"
             value={form.name}
             onChange={handleChange}
@@ -105,7 +105,7 @@ export default function RegisterPage() {
             name="email"
             type="email"
             placeholder="you@example.com"
-            className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 
+            className="mt-1 w-full text-white rounded-lg border border-white/10 bg-transparent p-3 
             outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30"
             value={form.email}
             onChange={handleChange}
@@ -122,7 +122,7 @@ export default function RegisterPage() {
               name="password"
               type={showPassword ? "text" : "password"}
               placeholder="Create a strong password"
-              className="mt-1 w-full rounded-lg border border-white/10 bg-transparent p-3 pr-14
+              className="mt-1 text-white w-full rounded-lg border border-white/10 bg-transparent p-3 pr-14
               outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30"
               value={form.password}
               // value="secret123"

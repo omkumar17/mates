@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState("system");
+  const [theme, setTheme] = useState("dark");
 
   useEffect(() => {
     const saved = localStorage.getItem("theme");
@@ -32,9 +32,10 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="px-1 py-1 rounded-full text-sm"
+      className=" sm:bg-foreground sm:text-background sm:p-2  flex flex-col rounded-full sm:text-md "
     >
-      {theme === "dark" ? "🌙" : "🌞"}
+      <span className="">{theme === "dark" ? "🌞" : "🌙"}</span>
+      <span>{theme === "dark" ? "Light" : "dark"}</span>
     </button>
   );
 }
