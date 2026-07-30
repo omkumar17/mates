@@ -212,7 +212,7 @@ export default function Navbar() {
           <BottomItem href="/profile" active={isActive("/profile")}>
             <div className="flex flex-col items-center gap-1">
               <div
-                className={`relative h-8 w-8 rounded-full overflow-hidden border-1 ${isActive("/profile")
+                className={`relative h-8 w-8 rounded-full overflow-hidden border ${isActive("/profile")
                   ? "border-pink-500"
                   : "border-transparent dark:border-white"
                   }`}

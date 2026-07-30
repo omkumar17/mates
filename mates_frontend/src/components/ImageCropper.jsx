@@ -175,7 +175,7 @@ export default function ImageCropper({
             type="button"
             onClick={handleSave}
             disabled={processing}
-            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-linear-to-r from-pink-500 to-rose-500 text-white font-semibold hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {processing ? (
               <>

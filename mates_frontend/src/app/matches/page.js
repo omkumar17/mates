@@ -39,12 +39,15 @@ export default function MatchesPage() {
   // ------------------------
   // Global Loading
   // ------------------------
-  if (authLoading || pageLoading) {
+  if (authLoading ) {
     return <FullPageLoader />;
   }
 
   return (
     <ProtectedRoute>
+       {pageLoading ? (
+            <FullPageLoader />
+        ) :(
       <div
         className="
     min-h-svh
@@ -174,6 +177,7 @@ export default function MatchesPage() {
 
         )}
       </div>
+        )}
     </ProtectedRoute>
   );
 }
