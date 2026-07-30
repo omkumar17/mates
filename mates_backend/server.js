@@ -45,6 +45,9 @@ app.use("/api/notifications", notificationRoutes);
 const interactionRoutes = require("./routes/interactionRoutes");
 app.use("/api/interactions", interactionRoutes);
 
+const uploadRoutes = require("./routes/uploadRoutes");
+app.use("/api/upload", uploadRoutes);
+
 // error handling
 app.use((err, req, res, next) => {
   console.error("Global error handler:", err);

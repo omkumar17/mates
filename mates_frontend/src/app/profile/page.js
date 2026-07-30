@@ -10,6 +10,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import ProfileForm from "@/components/ProfileForm";
 import FullPageLoader from "@/components/FullPageLoader";
 import Swal from "sweetalert2";
+import {
+  LogOut,
+} from "lucide-react";
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
@@ -81,15 +84,15 @@ export default function ProfilePage() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-linear-to-br pt-5">
-        <div className="md:hidden flex justify-between px-4">
-          <div className="relative top-4 right-4 z-50 md:hidden">
-            <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-foreground">
+        <div className="md:hidden flex items-center justify-between px-4">
+          <div className=" z-50 md:hidden">
+            <div className="flex items-center justify-center gap-2 text-md font-bold px-3 py-1 rounded-lg text-foreground">
               <Image
                 src="/logo.png"
                 alt="metly Logo"
-                width={50}
-                height={50}
-                className="mx-auto mb-6"
+                width={40}
+                height={40}
+                className="mx-auto"
               />
 
               <span>Metly</span>
@@ -97,10 +100,10 @@ export default function ProfilePage() {
           </div>
           <button
             onClick={handleLogout}
-            className="flex flex-col items-center justify-center gap-2 p-3 rounded-2xl font-bold bg-foreground text-red-500"
+            className="flex items-center justify-center gap-2 p-2 rounded-xl bg-red-600 hover:bg-red-500  text-white transition"
           >
-            🚪
-            <span className="text-sm">Logout</span>
+            <LogOut size={18} />
+            Logout
           </button>
         </div>
 
@@ -167,7 +170,7 @@ export default function ProfilePage() {
         {/* Full Screen Saving Overlay */}
 
         {saving && (
-          <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="fixed inset-0 flex items-center justify-center z-100 bg-background">
 
             <div className="rounded-2xl  p-8 flex flex-col items-center gap-4 shadow-xl">
 

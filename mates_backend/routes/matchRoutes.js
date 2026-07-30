@@ -42,7 +42,7 @@ router.get("/:matchId", authMiddleware, async (req, res) => {
     const { matchId } = req.params;
 
     const match = await Match.findById(matchId)
-      .populate("users", "name email");
+      .populate("users", "name images");
 
 
 

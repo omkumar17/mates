@@ -6,6 +6,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 const User = require("../models/user");
 const Like = require("../models/like");
 const Match = require("../models/match");
+const imageService = require("../services/imageService");
 
 
 const router = express.Router();
@@ -38,14 +39,22 @@ router.put("/me", authMiddleware, async (req, res) => {
     }
 
     // =============================
-    // Update Fields
+    // Handle Image Updates with Cloudinary Cleanup
+    // =============================
+    if (images !== undefined) {
+      // Delete images that are no longer in use
+      await imageService.deleteUnusedImages(user.images, images);
+      user.images = images;
+    }
+
+    // =============================
+    // Update Other Fields
     // =============================
     if (age !== undefined) user.age = age;
     if (gender !== undefined) user.gender = gender;
     if (city !== undefined) user.city = city;
     if (bio !== undefined) user.bio = bio;
     if (interests !== undefined) user.interests = interests;
-    if (images !== undefined) user.images = images; // 🔥 IMPORTANT
 
     if (preferences !== undefined) {
       user.preferences = {

@@ -114,6 +114,7 @@ router.post("/login", async (req, res) => {
         id: user._id.toString(),   // always send id
         name: user.name,
         email: user.email,
+        images: user.images,
       },
       token,
     });

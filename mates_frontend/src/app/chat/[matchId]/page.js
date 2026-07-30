@@ -46,6 +46,7 @@ export default function ChatPage() {
           (u) => u._id !== user.id
         );
         console.log("other user", otherUser);
+        console.log("other user image", otherUser.images[0].url);
 
         if (otherUser) {
           setChatUser(otherUser);
@@ -59,7 +60,7 @@ export default function ChatPage() {
   }, [matchId, user]);
 
   useEffect(() => {
-    if (!matchId) return;
+    if (!user || !matchId ) return;
     const socket = connectSocket();
 
     const fetchMessages = async () => {
@@ -69,16 +70,21 @@ export default function ChatPage() {
         );
 
         const data = await res.json();
-
         setMessages(data);
-        socket.emit("markSeen", { matchId });
+
+        if (
+          document.visibilityState === "visible" &&
+          document.hasFocus()
+        ) {
+          socket.emit("markSeen", { matchId });
+        }
       } catch (err) {
         console.error("Failed to fetch messages", err);
       }
     };
 
     fetchMessages();
-  }, [matchId]);
+  }, [matchId,user]);
   // ------------------------
   // Socket Setup
   // ------------------------
@@ -89,32 +95,28 @@ export default function ChatPage() {
 
     const onConnect = () => {
       socket.emit("joinRoom", matchId);
-      socket.emit("markSeen", { matchId });
+
+      if (
+        document.visibilityState === "visible" &&
+        document.hasFocus()
+      ) {
+        socket.emit("markSeen", { matchId });
+      }
 
     };
 
     const onReceiveMessage = (message) => {
-
-      setMessages((prev) => {
-
-        if (prev.some((m) => m._id === message._id)) {
-          return prev;
-        }
-
+      setMessages(prev => {
+        if (prev.some(m => m._id === message._id)) return prev;
         return [...prev, message];
       });
 
-      const handleVisibility = () => {
-        if (document.visibilityState === "visible") {
-          socket.emit("markSeen", { matchId });
-        }
-      };
-
-      document.addEventListener("visibilitychange", handleVisibility);
-
-      return () => {
-        document.removeEventListener("visibilitychange", handleVisibility);
-      };
+      if (
+        document.visibilityState === "visible" &&
+        document.hasFocus()
+      ) {
+        socket.emit("markSeen", { matchId });
+      }
     };
 
     const onTyping = () => setOtherTyping(true);
@@ -150,6 +152,27 @@ export default function ChatPage() {
     };
 
   }, [matchId, user]);
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    const handleVisibility = () => {
+      if (
+        document.visibilityState === "visible" &&
+        document.hasFocus()
+      ) {
+        socket.emit("markSeen", { matchId });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("focus", handleVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("focus", handleVisibility);
+    };
+  }, [matchId]);
   // ------------------------
   // Auto Scroll
   // ------------------------
@@ -283,7 +306,7 @@ export default function ChatPage() {
         sticky
         top-0
         z-50
-        p-4
+        p-3
         border-b
         bg-pink-700
         backdrop-blur-md
@@ -293,29 +316,32 @@ export default function ChatPage() {
     "
             >
               <div className="flex flex-row items-center justify-center gap-4">
-                <img
-                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${chatUser?.name}`}
-                  className="w-10 h-10 rounded-full"
-                  alt="avatar"
-                />
+                <div className="relative h-9 w-9 overflow-hidden rounded-full">
+                  <Image
+                    src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
+                    alt={chatUser?.name || "Profile"}
+                    fill
+                    className="object-cover object-top"
+                  />
+                </div>
                 <span>
 
-                  <span className="text-white text-xl font-semibold">
+                  <span className="text-white text-md font-bold">
                     {chatUser?.name || "User"}
                   </span>
                 </span>
 
               </div>
               <div className="fixed top-4 right-4 z-50 md:hidden">
-                <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-white " style={{
+                <div className="flex items-center gap-2 text-sm font-bold px-3 py-1 rounded-lg text-white " style={{
                   filter: "grayscale(100%) brightness(1000%)",
                 }}>
                   <Image
                     src="/logo.png"
                     alt="metly Logo"
-                    width={50}
-                    height={50}
-                    className="mx-auto mb-6"
+                    width={25}
+                    height={25}
+                    className="mx-auto"
                   />
 
                   <span>Metly</span>
@@ -359,32 +385,43 @@ export default function ChatPage() {
                     className={`flex ${isMe ? "justify-end" : "justify-start"
                       }`}
                   >
-                    <div className="max-w-[75%] space-y-1">
-                      <div
-                        className={`px-4 py-2 rounded-2xl text-md shadow
+                    <div className="flex max-w-[75%] space-y-1 flex-col">
+                      <div className="space-y-1 flex flex-row gap-1 ">
+                        <div className="relative h-6 w-6 overflow-hidden rounded-full">
+                          <Image
+                            src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
+                            alt={chatUser?.name || "Profile"}
+                            fill
+                            className={`object-cover object-top ${isMe ? "hidden" : ""} `}
+                          />
+                        </div>
+                        <div
+                          className={`px-4 py-2 rounded-2xl text-md shadow
                         ${isMe
-                            ? "bg-linear-to-r from-pink-500 to-purple-500 text-white rounded-br-sm"
-                            : "bg-linear-to-r dark:bg-gray-300 bg-gray-600 dark:text-black text-white rounded-br-sm"
-                          }
+                              ? "bg-linear-to-r from-pink-500 to-purple-500 text-white rounded-br-sm"
+                              : "bg-linear-to-r dark:bg-gray-300 bg-gray-600 dark:text-black text-white rounded-br-sm"
+                            }
                       `}
-                      >
-                        {!isMe && (
-                          <p className="text-xs  opacity-50 mb-1">
+                        >
+                          {/* {!isMe && (
+                          <p className="text-xs  opacity-50 mb-1 text-nowrap">
                             {msg.sender?.name || "User"}
                           </p>
-                        )}
-                        {msg.text}
-                        <div className={`text-[10px] p-0 opacity-60 text-right pr-0`}>{formatTime(msg.createdAt)}</div>
-                      </div>
+                        )} */}
+                          {msg.text}
+                          <div className={`text-[10px] p-0 opacity-60 text-right pr-0 text-nowrap`}>{formatTime(msg.createdAt)}</div>
+                        </div>
 
-                      {/* Meta */}
+                        {/* Meta */}
+
+                      </div>
                       <div
                         className={`text-[10px] opacity-60 ${isMe ? "text-right pr-1" : "pl-1"
                           }`}
                       >
 
                         {isLastMyMsg && (
-                          <span className="ml-2">
+                          <span className="ml-2 ">
                             {msg.seen ? "Seen ✓✓" : "Delivered ✓"}
                           </span>
                         )}
@@ -424,13 +461,13 @@ export default function ChatPage() {
                   onChange={(e) => handleTyping(e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="Type a message..."
-                  className="flex-1 rounded-full bg-gray-200 text-black placeholder:text-black  px-4 py-4 border border-foreground outline-none"
+                  className="flex-1 rounded-full bg-gray-200 text-black placeholder:text-black  px-3 py-3 border border-foreground outline-none"
                 />
 
                 <button
                   onClick={sendMessage}
                   className="
-                rounded-full px-4 py-4 text-white font-medium
+                rounded-full px-2 py-3 text-white font-medium
                 bg-linear-to-r from-pink-500 to-purple-500
                 hover:opacity-90 active:scale-95 transition
               "

@@ -56,11 +56,14 @@ export default function DiscoverPage() {
     setViewStartTime(Date.now());
 
     if (currentUser?.images) {
-      currentUser.images.forEach((src) => {
-        const img = new window.Image();
-        img.decoding = "async";
-        img.loading = "eager";
-        img.src = src;
+      currentUser.images.forEach((imgObj) => {
+        const src = typeof imgObj === "string" ? imgObj : imgObj?.url;
+        if (src) {
+          const img = new window.Image();
+          img.decoding = "async";
+          img.loading = "eager";
+          img.src = src;
+        }
       });
     }
   }, [index, currentUser]);
@@ -180,13 +183,13 @@ export default function DiscoverPage() {
 
         {/* Mobile Logo */}
         <div className="fixed top-4 right-4 z-50 md:hidden">
-          <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-foreground">
+          <div className="flex items-center justify-center gap-2 text-md font-bold px-3 py-1 rounded-lg text-foreground">
             <Image
               src="/logo.png"
               alt="metly Logo"
-              width={50}
-              height={50}
-              className="mx-auto mb-6"
+              width={35}
+              height={35}
+              className="mx-auto"
             />
 
             <span>Metly</span>
@@ -250,9 +253,9 @@ export default function DiscoverPage() {
                 onClick={handleTap} // 🔥 tap support
               >
 
-                {/* 🔥 IMAGE */}
+{/* 🔥 IMAGE */}
                 <img
-                  src={currentUser.images[currentImageIndex]}
+                  src={typeof currentUser.images[currentImageIndex] === "string" ? currentUser.images[currentImageIndex] : currentUser.images[currentImageIndex]?.url}
                   alt={currentUser.name}
                   loading="eager"
                   className="absolute inset-0 h-full w-full object-cover transition-all duration-300"

@@ -46,7 +46,8 @@ const userSchema = new mongoose.Schema(
     ],
     images: [
       {
-        type: String, // image URL
+        url: { type: String }, // image URL
+        publicId: { type: String }, // Cloudinary public_id
       },
     ],
     preferences: {

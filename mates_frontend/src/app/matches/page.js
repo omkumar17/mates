@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import FullPageLoader from "@/components/FullPageLoader";
 import Image from "next/image";
+import { Heart } from "lucide-react";
 
 export default function MatchesPage() {
   const { user, authLoading } = useAuth();
@@ -54,24 +55,32 @@ export default function MatchesPage() {
     text-foreground
   "
       >
-        <div className="sticky top-0 z-40 border-b bg-pink-700 text-white backdrop-blur-md px-5 py-4">
-          <div className="flex flex-col">          <h1 className="text-2xl font-bold">
-            Matches
-          </h1>
+        <div className="sticky text-sm top-0 z-40 border-b bg-pink-700 text-white backdrop-blur-md px-5 py-3">
+          <div className="flex flex-col text-sm">
+            <div className="flex gap-2 items-center">
+            <Heart
+              size={35}
+            />
+            <div className="flex flex-col">
+              <h1 className="text-lg font-bold">
+                Matches
+              </h1>
 
-            <p className="text-sm opacity-60">
-              {matches.length} {matches.length === 1 ? "match" : "matches"}
-            </p>
+              <p className="text-sm text-white">
+                {matches.length} {matches.length === 1 ? "match" : "matches"}
+              </p>
+            </div>
+            </div>
             <div className="fixed top-4 right-4 z-50 md:hidden">
-              <div className="flex items-center gap-2 text-lg font-bold px-3 py-1 rounded-lg text-white " style={{
+              <div className="flex items-center gap-2 font-bold px-3 py-1 rounded-lg text-white " style={{
                 filter: "grayscale(100%) brightness(1000%)",
               }}>
                 <Image
                   src="/logo.png"
                   alt="metly Logo"
-                  width={50}
-                  height={50}
-                  className="mx-auto mb-6"
+                  width={30}
+                  height={30}
+                  className="mx-auto "
                 />
 
                 <span>Metly</span>
@@ -87,13 +96,14 @@ export default function MatchesPage() {
 
             <div className="h-24 w-24 rounded-full bg-pink-100 dark:bg-pink-500/20 flex items-center justify-center animate-pulse">
 
-              <span className="text-5xl"><Image
-                src="/logo.png"
-                alt="metly Logo"
-                width={50}
-                height={50}
-                className="mx-auto mb-6"
-              /></span>
+              <span className="text-5xl">
+                <Image
+                  src="/logo.png"
+                  alt="metly Logo"
+                  width={50}
+                  height={50}
+                  className="mx-auto mb-6"
+                /></span>
 
             </div>
 
@@ -114,7 +124,7 @@ export default function MatchesPage() {
 
           </div>
         ) : (
-          <div className="relative mx-auto max-w-2xl space-y-3 p-4">
+          <div className="relative mx-auto max-w-5xl space-y-3 p-4">
             {matches.map((match) => (
               <div
                 key={match.matchId}
@@ -124,7 +134,8 @@ export default function MatchesPage() {
         items-center
         gap-4
         rounded-2xl
-        
+        shadow
+        dark:shadow-gray-500
         bg-card
         p-4
         cursor-pointer
@@ -132,11 +143,14 @@ export default function MatchesPage() {
         hover:shadow-lg
         hover:-translate-y-0.5
     "
-              >
-                <img
-                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${match.user.name}`}
-                  className="h-14 w-14 rounded-full"
-                />
+              ><div className="relative h-10 w-10 overflow-hidden rounded-full">
+                  <Image
+                    src={match.user.images?.[0]?.url || "/default-avatar.png"}
+                    alt={match.user.name || "Profile"}
+                    fill
+                    className="object-cover object-top"
+                  />
+                </div>
 
                 <div className="flex-1 min-w-0">
 

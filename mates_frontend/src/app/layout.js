@@ -3,6 +3,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import ClientLayout from "@/components/ClientLayout";
 import { Toaster } from "react-hot-toast";
+import Providers from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +27,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html>
+    <html lang="en" suppressHydrationWarning>
       <body className="">
+        <Providers>
+
         <AuthProvider>
           <ClientLayout>
             {children}
@@ -60,6 +63,7 @@ export default function RootLayout({ children }) {
             }}
           />
         </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
