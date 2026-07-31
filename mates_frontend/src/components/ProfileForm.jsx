@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useRef } from "react";
 import {
-  Camera,
   MapPin,
   User,
   Calendar,
   X,
   ImagePlus,
   Loader2,
+  PhoneCallIcon,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import ImageCropper from "./ImageCropper";
@@ -39,6 +39,9 @@ export default function ProfileForm({
   const [uploadingImages, setUploadingImages] = useState(false);
 
   const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
     age: "",
     gender: "",
     city: "",
@@ -58,6 +61,9 @@ export default function ProfileForm({
     if (!initialData) return;
 
     setForm({
+      name: initialData.name || "",
+      email: initialData.email || "",
+      phone: initialData.phone || "",
       age: initialData.age || "",
       gender: initialData.gender || "",
       city: initialData.city || "",
@@ -185,6 +191,9 @@ export default function ProfileForm({
 
       onSubmit({
         ...form,
+        name: String(form.name),
+        email: String(form.email),
+        phone: Number(form.phone),
         age: Number(form.age),
         images: finalImages,
         preferences: {
@@ -231,6 +240,9 @@ export default function ProfileForm({
 
       onSubmit({
         ...form,
+        name: String(form.name),
+        email: String(form.email),
+        phone: Number(form.phone),
         age: Number(form.age),
         images: finalImages,
         preferences: {
@@ -299,6 +311,80 @@ export default function ProfileForm({
         {/* PHOTO UPLOAD */}
         {/* ========================= */}
 
+        {/* ========================= */}
+        {/* ACCOUNT DETAILS */}
+        {/* ========================= */}
+
+        <div>
+          <h2 className="font-bold text-xl mb-4">
+            Account Information
+          </h2>
+
+          <div className="space-y-4">
+
+            {/* Full Name */}
+            <div className="relative">
+              <User
+                size={18}
+                className="absolute left-4 top-4 "
+              />
+
+              <input
+                type="text"
+                name="name"
+                value={form.name || ""}
+                onChange={handleChange}
+                placeholder="Full Name"
+                className="w-full rounded-xl border pl-12 pr-4 py-3 focus:ring-2 focus:ring-pink-500 outline-none"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="relative">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute left-4 top-4 h-[18px] w-[18px] text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16v12H4V6zm0 0l8 6 8-6"
+                />
+              </svg>
+
+              <input
+                type="email"
+                name="email"
+                value={form.email || ""}
+                onChange={handleChange}
+                placeholder="Email Address"
+                className="w-full rounded-xl border pl-12 pr-4 py-3 focus:ring-2 focus:ring-pink-500 outline-none"
+              />
+            </div>
+
+            {/* Mobile Number */}
+            <div className="relative">
+              <PhoneCallIcon
+                size={18}
+                className="absolute left-4 top-4"
+              />
+
+              <input
+                type="tel"
+                name="phone"
+                value={form.phone || ""}
+                onChange={handleChange}
+                placeholder="Mobile Number (Optional)"
+                className="w-full rounded-xl border pl-12 pr-4 py-3 focus:ring-2 focus:ring-pink-500 outline-none"
+              />
+            </div>
+
+          </div>
+        </div>
         <div>
 
           <h2 className="font-bold text-xl mb-4">
@@ -307,7 +393,7 @@ export default function ProfileForm({
 
           </h2>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
 
             {allImagesForDisplay.map((img) => (
 
@@ -523,6 +609,67 @@ export default function ProfileForm({
               "Fashion",
               "Cafe",
               "Adventure",
+              "Hiking",
+              "Camping",
+              "Cycling",
+              "Running",
+              "Yoga",
+              "Swimming",
+              "Badminton",
+              "Basketball",
+              "Volleyball",
+              "Tennis",
+              "Chess",
+              "Board Games",
+              "Anime",
+              "K-Dramas",
+              "TV Shows",
+              "Podcasts",
+              "Writing",
+              "Poetry",
+              "Painting",
+              "Sketching",
+              "Singing",
+              "Guitar",
+              "Piano",
+              "DJ",
+              "Concerts",
+              "Festivals",
+              "Foodie",
+              "Baking",
+              "Coffee",
+              "Tea",
+              "Street Food",
+              "Shopping",
+              "Thrifting",
+              "Luxury",
+              "Cars",
+              "Motorcycles",
+              "Technology",
+              "AI",
+              "Startups",
+              "Finance",
+              "Investing",
+              "Cryptocurrency",
+              "Volunteering",
+              "Spirituality",
+              "Meditation",
+              "Astronomy",
+              "Science",
+              "History",
+              "Languages",
+              "Memes",
+              "Stand-up Comedy",
+              "Nightlife",
+              "Beach",
+              "Mountains",
+              "Road Trips",
+              "Backpacking",
+              "Wildlife",
+              "Gardening",
+              "DIY",
+              "Interior Design",
+              "Fashion Design"
             ].map((interest) => {
               const selected =
                 form.interests.includes(interest);
@@ -545,8 +692,8 @@ export default function ProfileForm({
                     })
                   }
                   className={`px-4 py-2 rounded-full border transition ${selected
-                      ? "bg-pink-500 text-white border-pink-500"
-                      : "hover:border-pink-500"
+                    ? "bg-pink-500 text-white border-pink-500"
+                    : "hover:border-pink-500"
                     }`}
                 >
                   {interest}
@@ -568,7 +715,7 @@ export default function ProfileForm({
 
           </h2>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
             {[
               {
@@ -621,8 +768,8 @@ export default function ProfileForm({
                     });
                   }}
                   className={`rounded-2xl border p-5 transition text-center ${active
-                      ? "bg-pink-500 text-white border-pink-500"
-                      : "hover:border-pink-500"
+                    ? "bg-pink-500 text-white border-pink-500"
+                    : "hover:border-pink-500"
                     }`}
                 >
                   <div className="text-3xl">
@@ -698,8 +845,8 @@ export default function ProfileForm({
                     });
                   }}
                   className={`px-6 py-3 rounded-full border transition ${active
-                      ? "bg-pink-500 text-white border-pink-500"
-                      : "hover:border-pink-500"
+                    ? "bg-pink-500 text-white border-pink-500"
+                    : "hover:border-pink-500"
                     }`}
                 >
                   {gender.charAt(0).toUpperCase() +

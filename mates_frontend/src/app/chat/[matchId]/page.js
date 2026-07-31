@@ -8,10 +8,12 @@ import { useAuth } from "@/context/AuthContext";
 import api from "@/api/apiClient";
 import FullPageLoader from "@/components/FullPageLoader";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function ChatPage() {
   const { matchId } = useParams();
   const { user } = useAuth();
+  const router = useRouter();
 
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
@@ -354,7 +356,7 @@ if (!user) {
         gap-3
     "
             >
-              <div className="flex flex-row items-center justify-center gap-4">
+              <div className="flex flex-row items-center justify-center gap-4 cursor-pointer" onClick={() => router.push(`/matches/${chatUser._id}?matchId=${matchId}`)}>
                 <div className="relative h-9 w-9 overflow-hidden rounded-full">
                   <Image
                     src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
@@ -408,21 +410,11 @@ if (!user) {
             >
               {messages.map((msg, index) => {
                 console.log("msg", msg, "user", user);
-                const senderId =
-                  typeof msg.sender === "string"
-                    ? msg.sender
-                    : msg.sender?._id;
-                const isMe = senderId === user?.id;
+                const isMe = msg.sender?._id === user.id;
                 console.log("isMe", isMe, "msg", msg, "user", user);
 
                 const myMessages = messages.filter(
-                  (m) => {
-                    const mSenderId =
-                      typeof m.sender === "string"
-                        ? m.sender
-                        : m.sender?._id;
-                    return mSenderId === user?.id;
-                  }
+                  (m) => m.sender?._id === user.id
                 );
 
                 const isLastMyMsg =

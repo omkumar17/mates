@@ -30,9 +30,10 @@ export default function ProfilePage() {
       try {
         const res = await api.get("/user/me");
         setInitialData(res.data);
+        console.log(res.data);
       } catch (err) {
-        console.error(err);
-        toast.error("Failed to load profile.");
+        // console.error(err);
+        toast.error(err.response.data.message);
       } finally {
         setLoading(false);
       }
@@ -55,8 +56,8 @@ export default function ProfilePage() {
         router.push("/discover");
       }, 1000);
     } catch (err) {
-      console.error(err);
-      toast.error("Unable to update profile.");
+      // console.error(err);
+      toast.error(err.response.data.message);
     } finally {
       setSaving(false);
     }

@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    phone:{
+      type:Number,
+      unique:true,
+      trim:true,
+    },
     passwordHash: {
       type: String,
       required: true,
@@ -64,7 +69,8 @@ const userSchema = new mongoose.Schema(
       }],
       lookingFor: [
         {
-          type: String, // e.g. "friendship", "dating", "networking"
+          type: String,
+          default:"dating" // e.g. "friendship", "dating", "networking"
         },
       ],
       cityPreference: {
@@ -104,7 +110,8 @@ const userSchema = new mongoose.Schema(
     exposureScore: { type: Number, default: 0 },
     lastExposureUpdate: { type: Date, default: Date.now },
 
-    // seenProfiles: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+// seenProfiles: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    profileCompleted: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
     lastNotificationAt: { type: Date, default: null },
     recentProfileViews: { type: Number, default: 0 },

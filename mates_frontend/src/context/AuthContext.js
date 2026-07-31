@@ -26,17 +26,25 @@ export const AuthProvider = ({ children }) => {
 
   // Login
   const login = (userData, token) => {
-    localStorage.setItem("user", JSON.stringify(userData));
+    const userWithProfile = {
+      ...userData,
+      profileCompleted: userData.profileCompleted ?? false,
+    };
+    localStorage.setItem("user", JSON.stringify(userWithProfile));
     localStorage.setItem("token", token);
 
-    setUser(userData);
+    setUser(userWithProfile);
     setAuthLoading(false);
   };
 
   // Update user after profile edit
   const updateUser = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
+    const userWithProfile = {
+      ...userData,
+      profileCompleted: userData.profileCompleted ?? true,
+    };
+    setUser(userWithProfile);
+    localStorage.setItem("user", JSON.stringify(userWithProfile));
   };
 
   // Logout

@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Image from "next/image";
 import FullPageLoader from "@/components/FullPageLoader";
+import toast from "react-hot-toast";
 
 const EXIT = 420;
 
@@ -37,7 +38,8 @@ export default function DiscoverPage() {
         const res = await api.get("/user/discover");
         setUsers(res.data);
       } catch (error) {
-        console.error("Failed to fetch users", error);
+        // console.error("Failed to fetch users", error);
+        toast.error(error.response.data.message)
       } finally {
         setLoading(false);
       }

@@ -109,23 +109,23 @@ export default function ImageCropper({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-lg mx-4 bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center border border-foreground backdrop-blur-sm">
+      <div className="relative w-full max-w-lg mx-4 border border-foreground rounded-3xl overflow-hidden shadow-2xl">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b ">
           <h3 className="text-lg font-bold">Adjust Your Photo</h3>
           <button
             type="button"
             onClick={onCancel}
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition"
+            className="p-2  rounded-full transition"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Cropper Area */}
-        <div className="relative w-full aspect-square bg-black">
+        <div className="relative w-full aspect-square ">
           <Cropper
             image={imageSrc}
             crop={crop}
@@ -143,8 +143,8 @@ export default function ImageCropper({
         </div>
 
         {/* Zoom Controls */}
-        <div className="flex items-center justify-center gap-4 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-          <ZoomOut size={20} className="text-gray-500" />
+        <div className="flex items-center justify-center gap-4 px-6 py-4 border-t">
+          <ZoomOut size={20} className="" />
           <input
             type="range"
             min={0.5}
@@ -152,22 +152,22 @@ export default function ImageCropper({
             step={0.01}
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
-            className="w-48 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-pink-500"
+            className="w-48 h-2  rounded-lg appearance-none cursor-pointer bg-foreground accent-pink-500"
           />
-          <ZoomIn size={20} className="text-gray-500" />
+          <ZoomIn size={20} className="" />
         </div>
 
         {/* Hint text */}
-        <p className="text-xs text-center text-gray-500 px-6 pb-2">
+        <p className="text-xs text-center  px-6 pb-2">
           Drag to reposition. The photo will be cropped to 9:16 portrait format.
         </p>
 
         {/* Actions */}
-        <div className="flex gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex gap-3 px-6 py-4 border-t ">
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 py-3 rounded-xl border border-gray-300 dark:border-gray-600 font-semibold hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+            className="flex-1 py-3 rounded-xl border  font-semibold  transition"
           >
             Cancel
           </button>
@@ -175,7 +175,7 @@ export default function ImageCropper({
             type="button"
             onClick={handleSave}
             disabled={processing}
-            className="flex-1 py-3 rounded-xl bg-linear-to-r from-pink-500 to-rose-500 text-white font-semibold hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-linear-to-r from-pink-500 to-rose-500 font-semibold hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {processing ? (
               <>

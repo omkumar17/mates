@@ -3,6 +3,7 @@ const { applyDecay, calculatePriority } = require("../services/feedAlgorithm");
 // const { applyDecay, calculatePriority } = require("../services/fairnessService");
 const { preferenceFilter } = require("../services/preferenceFilter");
 const authMiddleware = require("../middleware/authMiddleware");
+const requireProfileComplete = require("../middleware/authMiddleware").requireProfileComplete;
 const User = require("../models/user");
 const Like = require("../models/like");
 const Match = require("../models/match");
@@ -29,67 +30,75 @@ router.get("/me", authMiddleware, async (req, res) => {
 // @access  Private
 
 router.put("/me", authMiddleware, async (req, res) => {
-  try {
-    const { age, gender, city, bio, interests, preferences, images } = req.body;
+    try {
+        const { name, email, phone, age, gender, city, bio, interests, preferences, images } = req.body;
 
-    const user = await User.findById(req.user._id);
+        const user = await User.findById(req.user._id);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // =============================
+        // Handle Image Updates with Cloudinary Cleanup
+        // =============================
+        if (images !== undefined) {
+            // Delete images that are no longer in use
+            await imageService.deleteUnusedImages(user.images, images);
+            user.images = images;
+        }
+
+        // =============================
+        // Update Other Fields
+        // =============================
+        if (name !== undefined) user.name = name;
+        if (email !== undefined) user.email = email;
+        if (age !== undefined) user.age = age;
+        if (gender !== undefined) user.gender = gender;
+        if (city !== undefined) user.city = city;
+        if (bio !== undefined) user.bio = bio;
+        if (interests !== undefined) user.interests = interests;
+
+        if (preferences !== undefined) {
+            user.preferences = {
+                ...user.preferences,
+                ...preferences,
+            };
+        }
+
+        // =============================
+        // 🔥 PROFILE COMPLETION VALIDATION
+        // =============================
+        if (
+            !user.age ||
+            !user.email ||
+            !user.name ||
+            !user.gender ||
+            !user.city ||
+            !user.bio ||
+            !user.images ||
+            user.images.length < 1
+        ) {
+            return res.status(400).json({
+                message: "Complete your profile. All fields including age, gender, city, bio, and at least one image are required.",
+            });
+        }
+
+        user.profileCompleted = true;
+        const updatedUser = await user.save();
+
+        const { passwordHash, ...userData } = updatedUser.toObject();
+
+        res.json({
+            message: "Profile updated successfully",
+            user: {
+                ...userData,
+            },
+        });
+    } catch (error) {
+        console.error("Update profile error:", error);
+        res.status(500).json({ message: "Server error" });
     }
-
-    // =============================
-    // Handle Image Updates with Cloudinary Cleanup
-    // =============================
-    if (images !== undefined) {
-      // Delete images that are no longer in use
-      await imageService.deleteUnusedImages(user.images, images);
-      user.images = images;
-    }
-
-    // =============================
-    // Update Other Fields
-    // =============================
-    if (age !== undefined) user.age = age;
-    if (gender !== undefined) user.gender = gender;
-    if (city !== undefined) user.city = city;
-    if (bio !== undefined) user.bio = bio;
-    if (interests !== undefined) user.interests = interests;
-
-    if (preferences !== undefined) {
-      user.preferences = {
-        ...user.preferences,
-        ...preferences,
-      };
-    }
-
-    const updatedUser = await user.save();
-
-    // =============================
-    // 🔥 PROFILE COMPLETION LOGIC
-    // =============================
-    const profileCompleted =
-      updatedUser.age &&
-      updatedUser.gender &&
-      updatedUser.city &&
-      updatedUser.images?.length >= 2 &&
-      updatedUser.preferences?.minAge &&
-      updatedUser.preferences?.maxAge &&
-      updatedUser.preferences?.genders?.length > 0;
-
-    const { passwordHash, ...userData } = updatedUser.toObject();
-
-    res.json({
-      message: "Profile updated successfully",
-      user: {
-        ...userData,
-        profileCompleted, // 🔥 added here
-      },
-    });
-  } catch (error) {
-    console.error("Update profile error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
 });
 
 /**
@@ -97,7 +106,7 @@ router.put("/me", authMiddleware, async (req, res) => {
  * @desc    Discover new users
  * @access  Private
  */
-router.get("/discover", authMiddleware, async (req, res) => {
+router.get("/discover", authMiddleware, requireProfileComplete, async (req, res) => {
     try {
         const currentUser = await User.findById(req.user._id);
         const currentUserId = currentUser._id;
@@ -194,7 +203,7 @@ router.get("/discover", authMiddleware, async (req, res) => {
         ranked.forEach(r => {
             console.log({
                 name: r.user.name,
-                user:r.user,
+                user: r.user,
                 exposure: r.user.exposureScore.toFixed(2),
                 priority: r.priority.toFixed(2),
                 reappear: r.reappear
@@ -226,37 +235,5 @@ router.get("/discover", authMiddleware, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
-
-// router.post("/impression", authMiddleware, async (req, res) => {
-//   try {
-//     const { shownUserId } = req.body;
-
-//     console.log("Body:", req.body);
-//     console.log("Auth User:", req.user);
-
-//     const shownUser = await User.findById(shownUserId);
-
-//     if (!shownUser) {
-//       return res.status(404).json({ message: "User not found" });
-//     }
-
-//     shownUser.exposureScore = (shownUser.exposureScore ?? 0) + 1;
-//     shownUser.lastExposureUpdate = new Date();
-
-//     await shownUser.save();
-
-//     res.json({ success: true });
-
-//   } catch (err) {
-//     console.error("===== IMPRESSION ERROR =====");
-//     console.error(err);
-//     console.error(err.stack);
-
-//     res.status(500).json({
-//       message: err.message,
-//     });
-//   }
-// });
-
 
 module.exports = router;

@@ -64,6 +64,7 @@ router.post("/register", async (req, res) => {
         id: user._id.toString(),
         name: user.name,
         email: user.email,
+        profileCompleted: false,
       },
       token,
     });
@@ -114,7 +115,9 @@ router.post("/login", async (req, res) => {
         id: user._id.toString(),   // always send id
         name: user.name,
         email: user.email,
+        phone: user.phone,
         images: user.images,
+        profileCompleted: user.profileCompleted ?? false,
       },
       token,
     });

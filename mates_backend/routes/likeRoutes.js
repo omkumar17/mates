@@ -1,5 +1,6 @@
 const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
+const requireProfileComplete = require("../middleware/authMiddleware").requireProfileComplete;
 const Like = require("../models/like");
 const Match = require("../models/match");
 const User = require("../models/user");
@@ -12,7 +13,7 @@ const router = express.Router();
  * @desc    Like a user & create match if mutual (Intent Weighted)
  * @access  Private
  */
-router.post("/:targetUserId", authMiddleware, async (req, res) => {
+router.post("/:targetUserId", authMiddleware, requireProfileComplete, async (req, res) => {
   try {
     const fromUserId = req.user._id;
     const toUserId = req.params.targetUserId;

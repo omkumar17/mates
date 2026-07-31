@@ -1,5 +1,6 @@
 const express = require("express");
 const authMiddleware = require("../middleware/authMiddleware");
+const requireProfileComplete = require("../middleware/authMiddleware").requireProfileComplete;
 const Match = require("../models/match");
 
 const router = express.Router();
@@ -9,7 +10,7 @@ const router = express.Router();
  * @desc    Get my matches
  * @access  Private
  */
-router.get("/", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, requireProfileComplete, async (req, res) => {
   try {
     const myUserId = req.user._id;
 
@@ -37,12 +38,12 @@ router.get("/", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/:matchId", authMiddleware, async (req, res) => {
+router.get("/:matchId", authMiddleware, requireProfileComplete, async (req, res) => {
   try {
     const { matchId } = req.params;
 
     const match = await Match.findById(matchId)
-      .populate("users", "name images");
+      .populate("users", "-passwordHash");
 
 
 
