@@ -6,10 +6,12 @@ import api from "@/api/apiClient";
 import { useAuth } from "@/context/AuthContext";
 import ShowPasswordToggleBtn from "@/components/ShowPasswordToggleBtn";
 import Image from "next/image";
+import { toast } from "react-hot-toast";
 
 export default function RegisterPage() {
   const router = useRouter();
   const { login } = useAuth();
+  const { logout } = useAuth();
 
   const [form, setForm] = useState({
     name: "",
@@ -28,6 +30,8 @@ export default function RegisterPage() {
     });
   };
 
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -38,7 +42,16 @@ export default function RegisterPage() {
       const { user, token } = res.data;
 
       login(user, token);
-      router.push("/profile");
+
+      toast.success(
+        "Registration successful! Please log in again to continue."
+      );
+
+      setTimeout(() => {
+        logout();
+      }, 2000);
+
+      // router.push("/profile");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
@@ -56,12 +69,12 @@ export default function RegisterPage() {
         onSubmit={handleSubmit}
         className="relative z-10 w-90 rounded-2xl border text-white border-white/20 
         bg-transparent backdrop-blur-xl p-8 shadow-2xl"
-        
+
       >
         {/* Title */}
         <div className="mb-6 text-center">
           <div className="text-3xl">
-            <Image 
+            <Image
               src="/logo.png"
               alt="metly Logo"
               width={50}

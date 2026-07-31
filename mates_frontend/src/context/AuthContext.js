@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }) => {
 
     setUser(null);
     setAuthLoading(false);
+    router.replace("/login");
   };
 
   return (
