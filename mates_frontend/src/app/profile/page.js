@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 export default function ProfilePage() {
-  const { user, setUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const { logout } = useAuth();
   const router = useRouter();
 
@@ -48,7 +48,7 @@ export default function ProfilePage() {
 
       const res = await api.put("/user/me", data);
 
-      setUser(res.data.user);
+      updateUser(res.data.user);
 
       toast.success("Profile updated successfully!");
 

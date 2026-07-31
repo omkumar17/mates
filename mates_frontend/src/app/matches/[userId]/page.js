@@ -153,8 +153,17 @@ export default function MatchedUserProfilePage() {
                     </div>
 
                     {/* RIGHT - DETAILS */}
-                    <div className="flex flex-1 flex-col justify-center overflow-hidden">
-
+                    <div className="flex flex-1 flex-col sm:flex-col-reverse justify-center overflow-hidden">
+                        {/* BUTTON */}
+                        <div className="py-8">
+                            <button
+                                onClick={() => router.push(`/chat/${matchId}`)}
+                                className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 py-4 text-lg font-semibold text-white transition cursor-pointer active:scale-95 flex items-center justify-center gap-3"
+                            >
+                                <MessageCircle size={22} />
+                                Send Message
+                            </button>
+                        </div>
                         <div className="space-y-6">
 
                             <div>
@@ -207,16 +216,7 @@ export default function MatchedUserProfilePage() {
                             )}
                         </div>
 
-                        {/* BUTTON */}
-                        <div className="pt-8">
-                            <button
-                                onClick={() => router.push(`/chat/${matchId}`)}
-                                className="w-full rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 py-4 text-lg font-semibold text-white transition cursor-pointer active:scale-95 flex items-center justify-center gap-3"
-                            >
-                                <MessageCircle size={22} />
-                                Send Message
-                            </button>
-                        </div>
+
 
                     </div>
                 </div>

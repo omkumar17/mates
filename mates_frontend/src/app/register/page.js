@@ -44,14 +44,10 @@ export default function RegisterPage() {
       login(user, token);
 
       toast.success(
-        "Registration successful! Please log in again to continue."
+        "Registration successful!"
       );
 
-      setTimeout(() => {
-        logout();
-      }, 2000);
-
-      // router.push("/profile");
+      router.push("/profile");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {

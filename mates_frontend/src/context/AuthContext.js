@@ -1,12 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import {useRouter} from "next/navigation"
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
+   const router = useRouter();
 
   // Restore user on refresh
   useEffect(() => {
@@ -54,7 +56,7 @@ export const AuthProvider = ({ children }) => {
 
     setUser(null);
     setAuthLoading(false);
-    router.replace("/login");
+    
   };
 
   return (
