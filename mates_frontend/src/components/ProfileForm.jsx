@@ -193,7 +193,7 @@ export default function ProfileForm({
         ...form,
         name: String(form.name),
         email: String(form.email),
-        phone: Number(form.phone),
+        phone: form.phone,
         age: Number(form.age),
         images: finalImages,
         preferences: {
@@ -242,7 +242,7 @@ export default function ProfileForm({
         ...form,
         name: String(form.name),
         email: String(form.email),
-        phone: Number(form.phone),
+        phone: form.phone,
         age: Number(form.age),
         images: finalImages,
         preferences: {

@@ -39,6 +39,17 @@ router.put("/me", authMiddleware, async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        const existing = await User.findOne({
+            email,
+            _id: { $ne: user._id }
+        });
+
+        if (existing) {
+            return res.status(400).json({
+                message: "Email already exists"
+            });
+        }
+
         // =============================
         // Handle Image Updates with Cloudinary Cleanup
         // =============================
@@ -53,6 +64,7 @@ router.put("/me", authMiddleware, async (req, res) => {
         // =============================
         if (name !== undefined) user.name = name;
         if (email !== undefined) user.email = email;
+        if (phone !== undefined) user.phone = phone;
         if (age !== undefined) user.age = age;
         if (gender !== undefined) user.gender = gender;
         if (city !== undefined) user.city = city;
