@@ -174,12 +174,12 @@ export default function Navbar() {
                 size={30}
                 className={isActive("/discover")
                   ? "text-pink-500"
-                  : "text-gray-400 dark:text-foreground"}
+                  : "text-foreground"}
               />
               <span
                 className={`text-xs ${isActive("/discover")
                   ? "text-pink-500 font-medium"
-                  : "text-gray-400 dark:text-foreground"
+                  : "text-foreground"
                   }`}
               >
                 Discover
@@ -193,7 +193,7 @@ export default function Navbar() {
                 size={30}
                 className={isActive("/matches")
                   ? "text-pink-500 fill-pink-500"
-                  : "text-gray-400 dark:text-foreground"}
+                  : "text-foreground"}
               />
 
 
@@ -201,7 +201,7 @@ export default function Navbar() {
               <span
                 className={`text-xs ${isActive("/matches")
                   ? "text-pink-500 font-medium"
-                  : "text-gray-400 dark:text-foreground"
+                  : "text-foreground"
                   }`}
               >
                 Matches
@@ -228,7 +228,7 @@ export default function Navbar() {
               <span
                 className={`text-xs ${isActive("/profile")
                   ? "text-pink-500 font-medium"
-                  : "text-gray-400 dark:text-foreground"
+                  : "text-foreground"
                   }`}
               >
                 {user.name.split(" ")[0]}

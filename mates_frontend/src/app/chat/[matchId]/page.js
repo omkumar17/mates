@@ -19,6 +19,8 @@ export default function ChatPage() {
   const [otherTyping, setOtherTyping] = useState(false);
   const [keyboardOffset, setKeyboardOffset] = useState(0);
   const [chatUser, setChatUser] = useState(null); // 👈 store full user
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [messagesLoading, setMessagesLoading] = useState(true);
 
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
@@ -71,6 +73,7 @@ export default function ChatPage() {
 
         const data = await res.json();
         setMessages(data);
+        setMessagesLoading(false);
 
         if (
           document.visibilityState === "visible" &&
@@ -80,6 +83,7 @@ export default function ChatPage() {
         }
       } catch (err) {
         console.error("Failed to fetch messages", err);
+        setMessagesLoading(false);
       }
     };
 
@@ -94,6 +98,8 @@ export default function ChatPage() {
     const socket = connectSocket();
 
     const onConnect = () => {
+      setSocketConnected(true);
+
       socket.emit("joinRoom", matchId);
 
       if (
@@ -103,6 +109,10 @@ export default function ChatPage() {
         socket.emit("markSeen", { matchId });
       }
 
+    };
+
+    const onDisconnect = () => {
+      setSocketConnected(false);
     };
 
     const onReceiveMessage = (message) => {
@@ -134,6 +144,7 @@ export default function ChatPage() {
     };
 
     socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
     socket.on("receiveMessage", onReceiveMessage);
     socket.on("typing", onTyping);
     socket.on("stopTyping", onStopTyping);
@@ -145,6 +156,7 @@ export default function ChatPage() {
 
     return () => {
       socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
       socket.off("receiveMessage", onReceiveMessage);
       socket.off("typing", onTyping);
       socket.off("stopTyping", onStopTyping);
@@ -292,12 +304,39 @@ export default function ChatPage() {
       minute: "2-digit",
     });
 
+if (!user) {
+    return (
+      <ProtectedRoute>
+        <FullPageLoader />
+      </ProtectedRoute>
+    );
+  }
+
+  if (!socketConnected) {
+    return (
+      <ProtectedRoute>
+        <FullPageLoader
+          title="Connecting..."
+          subtitle="Please wait while we establish a secure connection."
+        />
+      </ProtectedRoute>
+    );
+  }
+
+  if (messagesLoading) {
+    return (
+      <ProtectedRoute>
+        <FullPageLoader
+          title="Loading chat..."
+          subtitle="Fetching your conversation."
+        />
+      </ProtectedRoute>
+    );
+  }
+
   return (
     <ProtectedRoute>
-      {!user ? (
-        <FullPageLoader />
-      ) : (
-        <div className="sm:min-h-screen min-h-svh ">
+      <div className="sm:min-h-screen min-h-svh ">
           <div className="fixed sm:ml-64 inset-0 flex sm:mb-0 mb-16 flex-col bg-background text-foreground">
             {/* Header */}
             <div
@@ -369,11 +408,21 @@ export default function ChatPage() {
             >
               {messages.map((msg, index) => {
                 console.log("msg", msg, "user", user);
-                const isMe = msg.sender?._id === user.id;
+                const senderId =
+                  typeof msg.sender === "string"
+                    ? msg.sender
+                    : msg.sender?._id;
+                const isMe = senderId === user?.id;
                 console.log("isMe", isMe, "msg", msg, "user", user);
 
                 const myMessages = messages.filter(
-                  (m) => m.sender?._id === user.id
+                  (m) => {
+                    const mSenderId =
+                      typeof m.sender === "string"
+                        ? m.sender
+                        : m.sender?._id;
+                    return mSenderId === user?.id;
+                  }
                 );
 
                 const isLastMyMsg =
@@ -478,7 +527,6 @@ export default function ChatPage() {
             </div>
           </div>
         </div>
-      )}
     </ProtectedRoute>
   );
 }

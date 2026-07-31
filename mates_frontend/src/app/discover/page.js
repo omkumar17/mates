@@ -179,7 +179,7 @@ export default function DiscoverPage() {
 
   return (
     <ProtectedRoute>
-      <div className="relative min-h-full bg-background text-foreground overflow-hidden">
+      <div className="relative min-h-full sm:ml-64 bg-background text-foreground overflow-hidden">
 
         {/* Mobile Logo */}
         <div className="fixed top-4 right-4 z-50 md:hidden">
