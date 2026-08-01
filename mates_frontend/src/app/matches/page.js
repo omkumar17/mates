@@ -54,7 +54,7 @@ export default function MatchesPage() {
         <div
           className="
     min-h-svh
-    sm:ml-64
+    md:ml-64
     pb-16
     sm:pb-0
     bg-background

@@ -11,14 +11,21 @@ module.exports = async (socket, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select("-passwordHash");
+    const user = await User.findById(decoded.id)
+      .select("name email profileCompleted")
+      .lean();
 
     if (!user) {
       return next(new Error("User not found"));
     }
 
-    // Attach user to socket
-    socket.user = user;
+    socket.user = {
+      _id: user._id,
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      profileCompleted: user.profileCompleted,
+    };
 
     next();
   } catch (error) {
@@ -26,4 +33,3 @@ module.exports = async (socket, next) => {
     next(new Error("Authentication failed"));
   }
 };
-

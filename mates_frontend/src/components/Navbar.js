@@ -71,7 +71,7 @@ export default function Navbar() {
   return (
     <>
       {/* ================= Desktop Sidebar ================= */}
-      <aside className="hidden sm:flex fixed left-0 top-0 h-screen w-64 flex-col text-white border-r bg-pink-900 backdrop-blur-xl z-101">
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-64 flex-col text-white border-r bg-pink-900 backdrop-blur-xl z-101">
 
         {/* Logo */}
         <div className="p-6 text-2xl font-bold flex flex-col items-center gap-2">
@@ -153,7 +153,7 @@ export default function Navbar() {
       {/* ================= Mobile Bottom Bar ================= */}
       <nav
         className={`
-          sm:hidden
+          md:hidden
           fixed
           bottom-0
           inset-x-0

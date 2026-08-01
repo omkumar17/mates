@@ -61,7 +61,7 @@ export default function MatchedUserProfilePage() {
     if (!matchedUser) {
         return (
             <ProtectedRoute>
-                <div className="min-h-screen sm:ml-64 flex items-center justify-center">
+                <div className="min-h-screen md:ml-64 flex items-center justify-center">
                     <p className="text-lg opacity-60">User not found.</p>
                 </div>
             </ProtectedRoute>
@@ -73,7 +73,7 @@ export default function MatchedUserProfilePage() {
 
     return (
         <ProtectedRoute>
-            <div className="min-h-svh sm:ml-64 pb-20 sm:pb-0 bg-background text-foreground">
+            <div className="min-h-svh md:ml-64 pb-20 md:pb-0 bg-background text-foreground">
                 {/* Header */}
                 <div className="sticky top-0 z-40 border-b bg-pink-700 text-white backdrop-blur-md px-4 py-3 flex items-center gap-3">
                     <button
@@ -153,7 +153,7 @@ export default function MatchedUserProfilePage() {
                     </div>
 
                     {/* RIGHT - DETAILS */}
-                    <div className="flex flex-1 flex-col sm:flex-col-reverse justify-center overflow-hidden">
+                    <div className="flex flex-1 flex-col md:flex-col-reverse justify-center overflow-hidden">
                         {/* BUTTON */}
                         <div className="py-8">
                             <button

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import {useRouter} from "next/navigation"
+import { disconnectSocket } from "@/socket/socket";
 
 const AuthContext = createContext(null);
 
@@ -51,6 +52,8 @@ export const AuthProvider = ({ children }) => {
 
   // Logout
   const logout = () => {
+
+    disconnectSocket();
     localStorage.removeItem("user");
     localStorage.removeItem("token");
 

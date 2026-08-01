@@ -46,8 +46,10 @@ export default function ChatPage() {
         console.log("result", res);
         console.log("user_id", user);
 
+        const currentUserId = user.id || user._id;
+
         const otherUser = res.data.users.find(
-          (u) => u._id !== user.id
+          (u) => String(u._id) !== String(currentUserId)
         );
         console.log("other user", otherUser);
         console.log("other user image", otherUser.images[0].url);
@@ -64,7 +66,7 @@ export default function ChatPage() {
   }, [matchId, user]);
 
   useEffect(() => {
-    if (!user || !matchId ) return;
+    if (!user || !matchId) return;
     const socket = connectSocket();
 
     const fetchMessages = async () => {
@@ -90,7 +92,7 @@ export default function ChatPage() {
     };
 
     fetchMessages();
-  }, [matchId,user]);
+  }, [matchId, user]);
   // ------------------------
   // Socket Setup
   // ------------------------
@@ -168,16 +170,21 @@ export default function ChatPage() {
   }, [matchId, user]);
 
   useEffect(() => {
-    const socket = getSocket();
+    if (!matchId) return;
+
+    const socket = connectSocket();
 
     const handleVisibility = () => {
       if (
+        socket.connected &&
         document.visibilityState === "visible" &&
         document.hasFocus()
       ) {
         socket.emit("markSeen", { matchId });
       }
     };
+
+    handleVisibility();
 
     document.addEventListener("visibilitychange", handleVisibility);
     window.addEventListener("focus", handleVisibility);
@@ -306,7 +313,7 @@ export default function ChatPage() {
       minute: "2-digit",
     });
 
-if (!user) {
+  if (!user) {
     return (
       <ProtectedRoute>
         <FullPageLoader />
@@ -338,11 +345,11 @@ if (!user) {
 
   return (
     <ProtectedRoute>
-      <div className="sm:min-h-screen min-h-svh ">
-          <div className="fixed sm:ml-64 inset-0 flex sm:mb-0 mb-16 flex-col bg-background text-foreground">
-            {/* Header */}
-            <div
-              className="
+      <div className="md:min-h-screen min-h-svh ">
+        <div className="fixed md:ml-64 inset-0 flex md:mb-0 mb-16 flex-col bg-background text-foreground">
+          {/* Header */}
+          <div
+            className="
         shrink-0
         sticky
         top-0
@@ -355,44 +362,44 @@ if (!user) {
         items-center
         gap-3
     "
-            >
-              <div className="flex flex-row items-center justify-center gap-4 cursor-pointer" onClick={() => router.push(`/matches/${chatUser._id}?matchId=${matchId}`)}>
-                <div className="relative h-9 w-9 overflow-hidden rounded-full">
-                  <Image
-                    src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
-                    alt={chatUser?.name || "Profile"}
-                    fill
-                    className="object-cover object-top"
-                  />
-                </div>
-                <span>
-
-                  <span className="text-white text-md font-bold">
-                    {chatUser?.name || "User"}
-                  </span>
-                </span>
-
+          >
+            <div className="flex flex-row items-center justify-center gap-4 cursor-pointer" onClick={() => router.push(`/matches/${chatUser._id}?matchId=${matchId}`)}>
+              <div className="relative h-9 w-9 overflow-hidden rounded-full">
+                <Image
+                  src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
+                  alt={chatUser?.name || "Profile"}
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
-              <div className="fixed top-4 right-4 z-50 md:hidden">
-                <div className="flex items-center gap-2 text-sm font-bold px-3 py-1 rounded-lg text-white " style={{
-                  filter: "grayscale(100%) brightness(1000%)",
-                }}>
-                  <Image
-                    src="/logo.png"
-                    alt="metly Logo"
-                    width={25}
-                    height={25}
-                    className="mx-auto"
-                  />
+              <span>
 
-                  <span>Metly</span>
-                </div>
+                <span className="text-white text-md font-bold">
+                  {chatUser?.name || "User"}
+                </span>
+              </span>
+
+            </div>
+            <div className="fixed top-4 right-4 z-50 md:hidden">
+              <div className="flex items-center gap-2 text-sm font-bold px-3 py-1 rounded-lg text-white " style={{
+                filter: "grayscale(100%) brightness(1000%)",
+              }}>
+                <Image
+                  src="/logo.png"
+                  alt="metly Logo"
+                  width={25}
+                  height={25}
+                  className="mx-auto"
+                />
+
+                <span>Metly</span>
               </div>
             </div>
+          </div>
 
-            {/* Messages */}
-            <div
-              className="
+          {/* Messages */}
+          <div
+            className="
         flex-1
         overflow-y-auto
         px-4
@@ -401,124 +408,124 @@ if (!user) {
         overscroll-contain
         
     "
-              style={{
-                backgroundImage: "url('/logo.png')",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "200px", // 50px height (approximately)
-              }}
-            >
-              {messages.map((msg, index) => {
-                console.log("msg", msg, "user", user);
-                const isMe = msg.sender?._id === user.id;
-                console.log("isMe", isMe, "msg", msg, "user", user);
+            style={{
+              backgroundImage: "url('/logo.png')",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "200px", // 50px height (approximately)
+            }}
+          >
+            {messages.map((msg, index) => {
+              console.log("msg", msg, "user", user);
+              const isMe = msg.sender?._id === user.id;
+              console.log("isMe", isMe, "msg", msg, "user", user);
 
-                const myMessages = messages.filter(
-                  (m) => m.sender?._id === user.id
-                );
+              const myMessages = messages.filter(
+                (m) => m.sender?._id === user.id
+              );
 
-                const isLastMyMsg =
-                  isMe && msg === myMessages[myMessages.length - 1];
+              const isLastMyMsg =
+                isMe && msg === myMessages[myMessages.length - 1];
 
-                return (
-                  <div
-                    key={msg._id || index}
-                    className={`flex ${isMe ? "justify-end" : "justify-start"
-                      }`}
-                  >
-                    <div className="flex max-w-[75%] space-y-1 flex-col">
-                      <div className="space-y-1 flex flex-row gap-1 ">
-                        <div className="relative h-6 w-6 overflow-hidden rounded-full">
-                          <Image
-                            src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
-                            alt={chatUser?.name || "Profile"}
-                            fill
-                            className={`object-cover object-top ${isMe ? "hidden" : ""} `}
-                          />
-                        </div>
-                        <div
-                          className={`px-4 py-2 rounded-2xl text-md shadow
+              return (
+                <div
+                  key={msg._id || index}
+                  className={`flex ${isMe ? "justify-end" : "justify-start"
+                    }`}
+                >
+                  <div className="flex max-w-[75%] space-y-1 flex-col">
+                    <div className="space-y-1 flex flex-row gap-1 ">
+                      <div className="relative h-6 w-6 overflow-hidden rounded-full">
+                        <Image
+                          src={chatUser?.images?.[0]?.url || "/default-avatar.png"}
+                          alt={chatUser?.name || "Profile"}
+                          fill
+                          className={`object-cover object-top ${isMe ? "hidden" : ""} `}
+                        />
+                      </div>
+                      <div
+                        className={`px-4 py-2 rounded-2xl text-md shadow
                         ${isMe
-                              ? "bg-linear-to-r from-pink-500 to-purple-500 text-white rounded-br-sm"
-                              : "bg-linear-to-r dark:bg-gray-300 bg-gray-600 dark:text-black text-white rounded-br-sm"
-                            }
+                            ? "bg-linear-to-r from-pink-500 to-purple-500 text-white rounded-br-sm"
+                            : "bg-linear-to-r dark:bg-gray-300 bg-gray-600 dark:text-black text-white rounded-br-sm"
+                          }
                       `}
-                        >
-                          {/* {!isMe && (
+                      >
+                        {/* {!isMe && (
                           <p className="text-xs  opacity-50 mb-1 text-nowrap">
                             {msg.sender?.name || "User"}
                           </p>
                         )} */}
-                          {msg.text}
-                          <div className={`text-[10px] p-0 opacity-60 text-right pr-0 text-nowrap`}>{formatTime(msg.createdAt)}</div>
-                        </div>
-
-                        {/* Meta */}
-
+                        {msg.text}
+                        <div className={`text-[10px] p-0 opacity-60 text-right pr-0 text-nowrap`}>{formatTime(msg.createdAt)}</div>
                       </div>
-                      <div
-                        className={`text-[10px] opacity-60 ${isMe ? "text-right pr-1" : "pl-1"
-                          }`}
-                      >
 
-                        {isLastMyMsg && (
-                          <span className="ml-2 ">
-                            {msg.seen ? "Seen ✓✓" : "Delivered ✓"}
-                          </span>
-                        )}
-                      </div>
+                      {/* Meta */}
+
+                    </div>
+                    <div
+                      className={`text-[10px] opacity-60 ${isMe ? "text-right pr-1" : "pl-1"
+                        }`}
+                    >
+
+                      {isLastMyMsg && (
+                        <span className="ml-2 ">
+                          {msg.seen ? "Seen ✓✓" : "Delivered ✓"}
+                        </span>
+                      )}
                     </div>
                   </div>
-                );
-              })}
-
-              {/* Typing Indicator */}
-              {otherTyping && (
-                <div className="flex justify-start">
-                  <div className="px-3 py-2 rounded-xl bg-card text-xs opacity-70 animate-pulse">
-                    Typing...
-                  </div>
                 </div>
-              )}
+              );
+            })}
 
-              <div ref={messagesEndRef} />
-            </div>
+            {/* Typing Indicator */}
+            {otherTyping && (
+              <div className="flex justify-start">
+                <div className="px-3 py-2 rounded-xl bg-card text-xs opacity-70 animate-pulse">
+                  Typing...
+                </div>
+              </div>
+            )}
 
-            {/* Input */}
-            <div
-              className="
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div
+            className="
         shrink-0     
         p-3
     "
 
-            // style={{
-            //   transform: `translateY(-${keyboardOffset}px)`,
-            //   transition: "transform .25s ease",
-            // }}
-            >
-              <div className="flex items-center z-100 text-foreground gap-2">
-                <input
-                  value={text}
-                  onChange={(e) => handleTyping(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Type a message..."
-                  className="flex-1 rounded-full bg-gray-200 text-black placeholder:text-black  px-3 py-3 border border-foreground outline-none"
-                />
+          // style={{
+          //   transform: `translateY(-${keyboardOffset}px)`,
+          //   transition: "transform .25s ease",
+          // }}
+          >
+            <div className="flex items-center z-100 text-foreground gap-2">
+              <input
+                value={text}
+                onChange={(e) => handleTyping(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Type a message..."
+                className="flex-1 rounded-full bg-gray-200 text-black placeholder:text-black  px-3 py-3 border border-foreground outline-none"
+              />
 
-                <button
-                  onClick={sendMessage}
-                  className="
+              <button
+                onClick={sendMessage}
+                className="
                 rounded-full px-2 py-3 text-white font-medium
                 bg-linear-to-r from-pink-500 to-purple-500
                 hover:opacity-90 active:scale-95 transition
               "
-                >
-                  Send
-                </button>
-              </div>
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
+      </div>
     </ProtectedRoute>
   );
 }

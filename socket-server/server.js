@@ -29,8 +29,8 @@ const server = http.createServer(app);
 // Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: "*", // Change this to your frontend URL in production
-    // origin:"https://metlyconnect.vercel.app",
+    // origin: "*", // Change this to your frontend URL in production
+    origin:"https://metlyconnect.vercel.app",
     methods: ["GET", "POST"],
     credentials: true,
   },

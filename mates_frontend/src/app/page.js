@@ -86,7 +86,7 @@ export default function HomePage() {
           Swipe, match, and chat in real time — all in one place.
         </p> */}
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col md:flex-row gap-4 justify-center">
 
           {!user && (
             <button

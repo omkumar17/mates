@@ -109,8 +109,8 @@ export default function ImageCropper({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center border border-foreground backdrop-blur-sm">
-      <div className="relative w-full max-w-lg mx-4 border border-foreground rounded-3xl overflow-hidden shadow-2xl">
+    <div className="fixed md:ml-64 inset-0 z-50 mb-20 md:mb-0 flex items-center justify-center  border-foreground backdrop-blur-sm overflow-auto">
+      <div className="relative mx-4 border border-foreground rounded-3xl overflow-hidden shadow-2xl">
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b ">

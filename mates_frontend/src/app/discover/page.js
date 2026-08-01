@@ -181,7 +181,7 @@ export default function DiscoverPage() {
 
   return (
     <ProtectedRoute>
-      <div className="relative min-h-full sm:ml-64 bg-background text-foreground overflow-hidden">
+      <div className="relative min-h-full md:ml-64 bg-background text-foreground overflow-hidden">
 
         {/* Mobile Logo */}
         <div className="fixed top-4 right-4 z-50 md:hidden">
@@ -199,7 +199,7 @@ export default function DiscoverPage() {
         </div>
 
         {/* Card Area */}
-        <div className="flex items-center justify-center min-h-full sm:pl-64 px-2 pt-4 pb-20">
+        <div className="flex items-center justify-center min-h-full  px-2 pt-4 pb-20">
 
           {loading ? (
             <FullPageLoader subtitle="Finding new conncetions" />
@@ -236,26 +236,31 @@ export default function DiscoverPage() {
 
             </div>
           ) : (
-            <div className="w-full flex items-center justify-center h-[calc(100dvh-80px)] sm:max-w-sm">
+            <div className="flex justify-center items-center h-[calc(100dvh-80px)]  max-w-lg min-w-sm sm:max-w-lg">
 
-              {/* CARD */}
               <div
-                key={currentUser._id}
-                className="relative 
-        mx-auto
-        w-[min(95vw,420px)]
-        aspect-9/16
-        max-h-[calc(100dvh-90px)] shadow-2xl overflow-hidden transition-transform duration-300 rounded-xl bg-black"
+                className="
+       relative
+      h-full
+      aspect-9/16
+      sm:max-w-full
+      sm:max-h-full
+      rounded-xl
+      overflow-hidden
+      bg-black
+      shadow-2xl
+      will-change-transform
+      touch-pan-y
+    "
                 style={{
-                  transform: `translateX(${offsetX}px) rotate(${offsetX / 18}deg) scale(${1 - Math.abs(offsetX) / 3000})`,
+                  transform: `translateX(${offsetX}px)
+                  rotate(${offsetX / 18}deg)
+                  scale(${Math.max(0.95, 1 - Math.abs(offsetX) / 3000)})`,
                 }}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
-                onClick={handleTap} // 🔥 tap support
+                onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} onClick={handleTap}
               >
 
-{/* 🔥 IMAGE */}
+                {/* 🔥 IMAGE */}
                 <img
                   src={typeof currentUser.images[currentImageIndex] === "string" ? currentUser.images[currentImageIndex] : currentUser.images[currentImageIndex]?.url}
                   alt={currentUser.name}

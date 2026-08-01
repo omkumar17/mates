@@ -84,7 +84,7 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen sm:ml-64 bg-linear-to-br pt-5">
+      <div className="min-h-screen md:ml-64 bg-linear-to-br pt-5">
         <div className="sm:hidden flex items-center justify-between px-4">
           <div className=" z-50 md:hidden">
             <div className="flex items-center justify-center gap-2 text-md font-bold px-3 py-1 rounded-lg text-foreground">

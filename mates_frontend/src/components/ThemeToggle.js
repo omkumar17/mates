@@ -19,7 +19,7 @@ export default function ThemeToggle() {
       }
       className="sm:bg-foreground sm:text-background sm:p-2 flex flex-col rounded-full sm:text-md"
     >
-      <div className="flex sm:flex-row flex-col gap-1 items-center justify-center">
+      <div className="flex md:flex-row flex-col gap-1 items-center justify-center">
         <div className="flex items-center justify-center rounded-full transition">
           {resolvedTheme === "dark" ? (
             <Sun size={30} className="text-yellow-400" />

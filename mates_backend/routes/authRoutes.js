@@ -10,7 +10,10 @@ const router = express.Router();
 ------------------------ */
 const generateToken = (userId) => {
   return jwt.sign(
-    { id: userId.toString() },   // normalize id
+    {
+      id: userId.toString(),
+      type: "access",
+    },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
@@ -61,10 +64,15 @@ router.post("/register", async (req, res) => {
     return res.status(201).json({
       message: "User registered successfully",
       user: {
+        _id: user._id,
         id: user._id.toString(),
         name: user.name,
         email: user.email,
-        profileCompleted: false,
+        phone: user.phone,
+        gender: user.gender,
+        city: user.city,
+        images: user.images,
+        profileCompleted: user.profileCompleted,
       },
       token,
     });
@@ -112,12 +120,15 @@ router.post("/login", async (req, res) => {
     return res.status(200).json({
       message: "Login successful",
       user: {
-        id: user._id.toString(),   // always send id
+        _id: user._id,
+        id: user._id.toString(),
         name: user.name,
         email: user.email,
         phone: user.phone,
+        gender: user.gender,
+        city: user.city,
         images: user.images,
-        profileCompleted: user.profileCompleted ?? false,
+        profileCompleted: user.profileCompleted,
       },
       token,
     });

@@ -12,16 +12,29 @@ const imageService = require("../services/imageService");
 
 const router = express.Router();
 
+const serializeUser = (user) => {
+    const userObj = user.toObject ? user.toObject() : user;
+
+    delete userObj.passwordHash;
+
+    return {
+        ...userObj,
+        id: userObj._id.toString(),
+    };
+};
+
 // @route   GET /api/users/me
 // @desc    Get current logged-in user's profile
 // @access  Private
 
 router.get("/me", authMiddleware, async (req, res) => {
     try {
-        return res.json(req.user);
+        return res.json(serializeUser(req.user));
     } catch (error) {
-        console.error("error getting profile", error);
-        res.status(500).json({ message: "Server error" });
+        console.error("Error getting profile:", error);
+        return res.status(500).json({
+            message: "Server error",
+        });
     }
 });
 
@@ -39,16 +52,16 @@ router.put("/me", authMiddleware, async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const existing = await User.findOne({
-            email,
-            _id: { $ne: user._id }
-        });
+        if (email && email !== user.email) {
+            const existing = await User.findOne({ email });
 
-        if (existing) {
-            return res.status(400).json({
-                message: "Email already exists"
-            });
+            if (existing) {
+                return res.status(400).json({
+                    message: "Email already exists",
+                });
+            }
         }
+
 
         // =============================
         // Handle Image Updates with Cloudinary Cleanup
@@ -103,9 +116,7 @@ router.put("/me", authMiddleware, async (req, res) => {
 
         res.json({
             message: "Profile updated successfully",
-            user: {
-                ...userData,
-            },
+            user: serializeUser(updatedUser),
         });
     } catch (error) {
         console.error("Update profile error:", error);
@@ -240,7 +251,9 @@ router.get("/discover", authMiddleware, requireProfileComplete, async (req, res)
             await item.user.save();
         }
 
-        res.json(finalFeed.map(f => f.user));
+        res.json(
+            finalFeed.map(f => serializeUser(f.user))
+        );
 
     } catch (error) {
         console.error("Discover users error:", error);
